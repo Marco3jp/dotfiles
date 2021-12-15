@@ -22,3 +22,10 @@
 - IdeaのOptions
   - 多すぎて中身の精査がしんどい
   - がんばって
+- xfce4の色々
+  - panel
+  - appfinder
+    - 主にショートカット
+  - keyboard shortcuts
+  - screensaver
+  - wm
