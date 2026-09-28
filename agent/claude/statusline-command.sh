@@ -1,4 +1,11 @@
 #!/bin/sh
+
+# add settings.json
+# "statusLine": {
+#    "type": "command",
+#    "command": "sh /Users/kazuma-kimura/.claude/statusline-command.sh"
+#  },
+
 input=$(cat)
 
 model=$(echo "$input" | jq -r '.model.display_name // .model.id // "unknown"')
