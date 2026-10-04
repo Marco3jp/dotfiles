@@ -11,6 +11,14 @@
 - ln -s $DOTFILES_ROOT_PWD/fcitx5/dark.conf ~/.local/share/fcitx5/themes/dark/theme.conf
   - これで動くのか不明（手元では ~/.local/share/fcitx5/themes/default/theme.conf なので）
 - ln -s $DOTFILES_ROOT_PWD/jetbrains/IntelliJIdea/fileTemplates/ ~/.config/JetBrains/IntelliJIdea2021.3/
+- ln -s $DOTFILES_ROOT_PWD/tmux/.tmux.conf ~/
+- ln -s $DOTFILES_ROOT_PWD/tmux/mem.sh ~/.config/tmux/
+- ln -s $DOTFILES_ROOT_PWD/tmux/claude-state.sh ~/.config/tmux/
+- ln -s $DOTFILES_ROOT_PWD/byobu/.tmux.conf ~/.config/byobu/
+  - byobu は ~/.tmux.conf を読まないので、これで source させている
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/settings.json ~/.claude/
+  - hooks で claude-state.sh を呼び、tmux のタブに作業中/入力待ちの色を付けている
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/themes/darcula.json ~/.claude/themes/
 
 ## 例外
 
