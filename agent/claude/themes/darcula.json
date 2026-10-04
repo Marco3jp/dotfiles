@@ -1,0 +1,51 @@
+{
+  "name": "Darcula",
+  "base": "dark",
+  "overrides": {
+    "claude": "#cc7832",
+    "claudeShimmer": "#e0a060",
+    "text": "#a9b7c6",
+    "inverseText": "#2b2b2b",
+    "inactive": "#808080",
+    "inactiveShimmer": "#9a9a9a",
+    "subtle": "#515151",
+    "suggestion": "#6897bb",
+    "permission": "#6897bb",
+    "permissionShimmer": "#8fb3d3",
+    "remember": "#bbb529",
+
+    "success": "#6a8759",
+    "error": "#ff6b68",
+    "warning": "#ffc66d",
+    "warningShimmer": "#ffd996",
+    "merged": "#9876aa",
+
+    "promptBorder": "#606366",
+    "promptBorderShimmer": "#808080",
+    "planMode": "#6897bb",
+    "autoAccept": "#bbb529",
+    "bashBorder": "#cc7832",
+
+    "diffAdded": "#294436",
+    "diffRemoved": "#4e2a2a",
+    "diffAddedDimmed": "#1f2e25",
+    "diffRemovedDimmed": "#332626",
+    "diffAddedWord": "#3c6b4a",
+    "diffRemovedWord": "#7a3b3b",
+
+    "userMessageBackground": "#313335",
+    "userMessageBackgroundHover": "#3c3f41",
+    "bashMessageBackgroundColor": "#313335",
+    "memoryBackgroundColor": "#313335",
+    "selectionBg": "#214283",
+
+    "red_FOR_SUBAGENTS_ONLY": "#ff6b68",
+    "green_FOR_SUBAGENTS_ONLY": "#6a8759",
+    "yellow_FOR_SUBAGENTS_ONLY": "#ffc66d",
+    "purple_FOR_SUBAGENTS_ONLY": "#9876aa",
+    "orange_FOR_SUBAGENTS_ONLY": "#cc7832",
+    "pink_FOR_SUBAGENTS_ONLY": "#ae8abe",
+    "cyan_FOR_SUBAGENTS_ONLY": "#5eacd0",
+    "blue_FOR_SUBAGENTS_ONLY": "#6897bb"
+  }
+}

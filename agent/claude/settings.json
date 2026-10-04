@@ -1,0 +1,62 @@
+{
+  "language": "日本語",
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
+  "timeFormat": "24-hour",
+  "theme": "custom:darcula",
+  "editorMode": "normal",
+  "verbose": true,
+  "autoCompactEnabled": false,
+  "autoScrollEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "sh /home/marco/.claude/statusline-command.sh"
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh busy 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh idle 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh wait 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh idle 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
