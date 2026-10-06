@@ -88,7 +88,7 @@ if [ -n "$p" ]; then
   n=$(( (p + 5) / 10 )); [ "$n" -gt 10 ] && n=10
   i=0
   while [ "$i" -lt 10 ]; do
-    if [ "$i" -lt "$n" ]; then v="$v█"; else v="$v░"; fi
+    if [ "$i" -lt "$n" ]; then v="${v}█"; else v="${v}░"; fi
     i=$((i + 1))
   done
   v="$v $p%"

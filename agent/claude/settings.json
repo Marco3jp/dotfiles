@@ -18,22 +18,82 @@
     "command": "sh /home/marco/.claude/statusline-command.sh"
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/tmux/claude-state.sh busy 2>/dev/null || true"
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
           }
         ]
       }
     ],
-    "Stop": [
+    "PreToolUse": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/tmux/claude-state.sh idle 2>/dev/null || true"
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
           }
         ]
       }
@@ -43,17 +103,47 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/tmux/claude-state.sh wait 2>/dev/null || true"
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
           }
         ]
       }
     ],
-    "SessionStart": [
+    "Elicitation": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/tmux/claude-state.sh idle 2>/dev/null || true"
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "ElicitationResult": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
           }
         ]
       }
