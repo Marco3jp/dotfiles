@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__QA_TITLE__</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --panel-2: #fbfbfc; --border: #dfe3e8;
+  --text: #1b1f24; --muted: #61686f; --accent: #2f6feb; --accent-weak: #e8f0fe;
+  --done: #1f8a4c; --done-weak: #e6f4ec; --warn: #b4530a; --warn-weak: #fdf0e3;
+  --code-bg: #f4f5f7; --hl: #fff4c8; --hl-border: #e0b400;
+  --mono: "Hack", "Hack Nerd Font", "Hack Nerd Font Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --t-com: #6a737d; --t-str: #0a7b3e; --t-num: #b4530a; --t-kw: #cf222e;
+  --t-typ: #8250df; --t-var: #953800; --t-fn: #1f5fd0; --t-tag: #116329; --t-attr: #0550ae;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171a; --panel: #1c2024; --panel-2: #21262b; --border: #333a41;
+    --text: #e6e9ec; --muted: #98a1a9; --accent: #6ea1ff; --accent-weak: #22304a;
+    --done: #57c98a; --done-weak: #1e3327; --warn: #e0994a; --warn-weak: #35281a;
+    --code-bg: #171b1f; --hl: #3d3512; --hl-border: #9a7a16;
+    --t-com: #8b949e; --t-str: #7ee787; --t-num: #ffa657; --t-kw: #ff7b72;
+    --t-typ: #d2a8ff; --t-var: #ffbd7a; --t-fn: #79c0ff; --t-tag: #7ee787; --t-attr: #a5d6ff;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-size: 14px; line-height: 1.7;
+}
+a { color: var(--accent); }
+code, pre { font-family: var(--mono); }
+
+header.top {
+  position: sticky; top: 0; z-index: 20; background: var(--panel);
+  border-bottom: 1px solid var(--border); padding: 12px 20px;
+}
+.top-row { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.top h1 { margin: 0; font-size: 17px; font-weight: 700; }
+.top .sub { color: var(--muted); font-size: 12px; }
+.toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.progress {
+  font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.bar { width: 120px; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--done); width: 0; transition: width .2s; }
+
+button {
+  font: inherit; font-size: 12px; padding: 5px 11px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--panel-2); color: var(--text); cursor: pointer;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { opacity: .88; color: #fff; }
+label.chk { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+main { padding: 18px 20px 120px; max-width: 1080px; margin: 0 auto; }
+
+.group {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel-2);
+  margin-bottom: 16px;
+}
+.group > summary.group-head {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 9px 13px; cursor: pointer; list-style: none; font-size: 13px;
+}
+summary.group-head::-webkit-details-marker { display: none; }
+summary.group-head::before { content: "▸"; color: var(--muted); font-size: 11px; }
+.group[open] > summary.group-head::before { content: "▾"; }
+.group[open] > summary.group-head { border-bottom: 1px solid var(--border); }
+.group-name { font-weight: 700; }
+.group-desc { color: var(--muted); font-size: 12px; }
+.group-head .spacer { flex: 1; }
+.group-count { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.group.all-done .group-count { color: var(--done); font-weight: 700; }
+.group-body { padding: 12px 12px 2px; }
+.group-body .card:last-child { margin-bottom: 10px; }
+
+.card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 14px; overflow: hidden;
+}
+.card.done { border-color: var(--done); }
+.card-head {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  padding: 10px 14px; background: var(--panel-2); border-bottom: 1px solid var(--border);
+}
+.qid { font-family: var(--mono); font-weight: 700; font-size: 13px; }
+.tag {
+  font-size: 11px; padding: 1px 8px; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--muted); background: var(--panel);
+}
+.tag.must { color: var(--warn); background: var(--warn-weak); border-color: transparent; }
+.tag.should { color: var(--accent); background: var(--accent-weak); border-color: transparent; }
+.tag.done { color: var(--done); background: var(--done-weak); border-color: transparent; }
+.tag.diff { color: var(--warn); background: var(--warn-weak); border-color: transparent; cursor: help; }
+.note {
+  margin: 0 14px 12px; padding: 8px 11px; font-size: 12.5px; color: var(--warn);
+  background: var(--warn-weak); border-radius: 7px; white-space: pre-wrap;
+}
+.card-head .spacer { flex: 1; }
+
+.q-body { padding: 12px 14px 4px; }
+.q-body p { margin: 0 0 8px; }
+.q-body ul, .q-body ol { margin: 4px 0 8px; padding-left: 22px; }
+.q-body code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+.q-body pre {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 10px 12px; overflow-x: auto; font-size: 12.5px; margin: 8px 0;
+}
+
+.refs { padding: 4px 14px 12px; display: flex; flex-direction: column; gap: 6px; }
+.ref { border: 1px solid var(--border); border-radius: 7px; background: var(--panel-2); }
+.ref > summary {
+  cursor: pointer; padding: 7px 11px; display: flex; gap: 8px; align-items: center;
+  font-size: 12.5px; list-style: none;
+}
+.ref > summary::-webkit-details-marker { display: none; }
+.ref > summary::before { content: "▸"; color: var(--muted); font-size: 11px; }
+.ref[open] > summary::before { content: "▾"; }
+.ref .kind {
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px;
+}
+.ref .label { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.ref .summary-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; }
+.ref .summary-actions a, .ref .summary-actions button { font-size: 11px; }
+.ref-body { border-top: 1px solid var(--border); }
+
+.snippet { overflow-x: auto; background: var(--code-bg); }
+table.code {
+  border-collapse: collapse; width: 100%;
+  font-family: var(--mono); font-size: 12.5px; tab-size: 4; -moz-tab-size: 4;
+}
+table.code td { padding: 0 8px; vertical-align: top; white-space: pre; }
+table.code td.ln {
+  width: 1%; text-align: right; color: var(--muted); user-select: none;
+  border-right: 1px solid var(--border); font-variant-numeric: tabular-nums;
+}
+table.code tr.hl { background: var(--hl); }
+table.code tr.hl td.ln { border-right-color: var(--hl-border); font-weight: 700; }
+.c-com { color: var(--t-com); font-style: italic; }
+.c-str { color: var(--t-str); }
+.c-num { color: var(--t-num); }
+.c-kw  { color: var(--t-kw); }
+.c-typ { color: var(--t-typ); }
+.c-var { color: var(--t-var); }
+.c-fn  { color: var(--t-fn); }
+.c-tag { color: var(--t-tag); }
+.c-attr { color: var(--t-attr); }
+.excerpt { padding: 10px 13px; font-size: 13px; white-space: pre-wrap; }
+.excerpt.mono { font-family: var(--mono); font-size: 12.5px; }
+
+.answer { padding: 0 14px 14px; }
+.answer .opts { display: flex; flex-direction: column; gap: 4px; margin: 0 0 8px; }
+.answer .opts label { font-size: 13px; display: flex; gap: 7px; align-items: flex-start; cursor: pointer; }
+.answer textarea {
+  width: 100%; min-height: 72px; resize: vertical; font: inherit; font-size: 13.5px;
+  padding: 9px 11px; border-radius: 7px; border: 1px solid var(--border);
+  background: var(--panel-2); color: var(--text);
+}
+.answer textarea:focus { outline: none; border-color: var(--accent); }
+.answer-foot { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.answer-foot .hint { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+footer.bottom {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+  background: var(--panel); border-top: 1px solid var(--border);
+  padding: 10px 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+footer .hint { font-size: 11.5px; color: var(--muted); }
+
+#toast {
+  position: fixed; left: 50%; bottom: 74px; transform: translateX(-50%) translateY(14px);
+  background: var(--text); color: var(--bg); font-size: 12.5px; padding: 8px 16px;
+  border-radius: 999px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+  z-index: 40; max-width: 90vw;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+dialog#copyDialog {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text);
+  width: min(760px, 92vw); padding: 0;
+}
+dialog#copyDialog::backdrop { background: rgba(0,0,0,.45); }
+.dlg-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+.dlg-head strong { font-size: 14px; }
+.dlg-head .spacer { flex: 1; }
+dialog#copyDialog textarea {
+  width: 100%; min-height: 46vh; border: 0; border-radius: 0; resize: vertical;
+  font-family: var(--mono); font-size: 12.5px; padding: 12px 16px;
+  background: var(--panel); color: var(--text);
+}
+dialog#copyDialog textarea:focus { outline: none; }
+dialog#sourceDialog {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel); color: var(--text);
+  width: min(860px, 94vw); padding: 0;
+}
+dialog#sourceDialog::backdrop { background: rgba(0,0,0,.45); }
+dialog#sourceDialog pre {
+  margin: 0; max-height: 60vh; overflow: auto; padding: 12px 16px;
+  font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; background: var(--code-bg);
+}
+.dlg-foot { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; }
+.dlg-foot .hint { font-size: 11.5px; color: var(--muted); margin-left: auto; }
+.empty { color: var(--muted); padding: 40px 0; text-align: center; }
+</style>
+</head>
+<body>
+<script id="qa-data" type="application/json">__QA_DATA_JSON__</script>
+
+<header class="top">
+  <div class="top-row">
+    <h1 id="pageTitle"></h1>
+    <span class="sub" id="pageSub"></span>
+  </div>
+  <div class="toolbar">
+    <div class="progress">
+      <span id="progressText">0 / 0</span>
+      <span class="bar"><i id="progressBar"></i></span>
+    </div>
+    <label class="chk"><input type="checkbox" id="groupBySeverity" checked> Tierでまとめる</label>
+    <label class="chk"><input type="checkbox" id="filterUnanswered"> 未回答のみ</label>
+    <label class="chk"><input type="checkbox" id="expandAll"> 参照を全部開く</label>
+    <span style="flex:1"></span>
+    <button id="btnCopyTop" class="primary">回答をコピー</button>
+  </div>
+</header>
+
+<main id="cards"></main>
+
+<footer class="bottom">
+  <button id="btnCopyBottom" class="primary">回答をコピー</button>
+  <button id="btnPreview">コピー内容を確認</button>
+  <button id="btnExport">回答をJSON保存</button>
+  <button id="btnImport">JSON読込</button>
+  <input type="file" id="fileImport" accept="application/json" hidden>
+  <button id="btnSource" hidden>元テキストを見る</button>
+  <button id="btnClear">回答を全消去</button>
+  <span class="hint" id="saveHint">回答はこのブラウザに自動保存されるわ</span>
+</footer>
+
+<dialog id="copyDialog">
+  <div class="dlg-head">
+    <strong>コピー内容</strong>
+    <span class="spacer"></span>
+    <button id="dlgClose">閉じる</button>
+  </div>
+  <textarea id="dlgText" spellcheck="false"></textarea>
+  <div class="dlg-foot">
+    <button id="dlgCopy" class="primary">クリップボードにコピー</button>
+    <span class="hint">この内容をそのまま Claude Code に貼り戻せるわ</span>
+  </div>
+</dialog>
+
+<dialog id="sourceDialog">
+  <div class="dlg-head">
+    <strong>元テキスト（メインエージェントから渡された原文）</strong>
+    <span class="spacer"></span>
+    <button id="srcClose">閉じる</button>
+  </div>
+  <pre id="srcText"></pre>
+  <div class="dlg-foot">
+    <button id="srcCopy" class="primary">原文をコピー</button>
+    <span class="hint">カードの質問文は原文をそのまま出しているわ。ここで突き合わせられる</span>
+  </div>
+</dialog>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var DATA = JSON.parse(document.getElementById("qa-data").textContent);
+  var META = DATA.meta || {};
+  var ITEMS = DATA.items || [];
+  var STORE_KEY = "qa-page:" + (META.id || location.pathname);
+  var UI_KEY = STORE_KEY + ":ui";
+  var state = loadState();
+  var ui = loadUi();
+
+  /* severity = 回答の優先度 Tier。表示順はこの配列順 */
+  var SEV = [
+    { key: "must", name: "must", desc: "決まらないと実装が止まる", open: true },
+    { key: "should", name: "should", desc: "方針確認", open: true },
+    { key: "info", name: "info", desc: "共有・確認のみ", open: false },
+    { key: "", name: "未分類", desc: "", open: true }
+  ];
+
+  /* ---------- storage ---------- */
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveState() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
+    catch (e) { hint("保存に失敗したわ（localStorage が使えないみたい）"); }
+  }
+  function entry(id) {
+    if (!state[id]) state[id] = { text: "", choice: null };
+    return state[id];
+  }
+  /* 表示状態は回答と別キーに置く（回答のJSON書き出しを汚さないため） */
+  function loadUi() {
+    var u;
+    try { u = JSON.parse(localStorage.getItem(UI_KEY)) || {}; }
+    catch (e) { u = {}; }
+    if (!u.groups) u.groups = {};
+    if (u.grouped == null) u.grouped = true;
+    return u;
+  }
+  function saveUi() {
+    try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {}
+  }
+  function hint(msg) { document.getElementById("saveHint").textContent = msg; }
+
+  /* ---------- utils ---------- */
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function el(tag, attrs, html) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === "class") n.className = attrs[k];
+      else if (attrs[k] != null) n.setAttribute(k, attrs[k]);
+    }
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove("show"); }, 2200);
+  }
+  function copyText(text, okMsg) {
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      toast(ok ? okMsg : "コピーできなかったわ。「コピー内容を確認」から手で選んで");
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast(okMsg); }, fallback);
+    } else fallback();
+  }
+
+  /* ---------- syntax highlight (行間で状態を持ち越すスキャナ) ---------- */
+  var HL = (function () {
+    function words(s) {
+      var m = Object.create(null), a = s.split(/\s+/);
+      for (var i = 0; i < a.length; i++) if (a[i]) m[a[i]] = 1;
+      return m;
+    }
+    var Q = { s: { q: "'", esc: true }, d: { q: '"', esc: true }, b: { q: "`", esc: true, multi: true } };
+
+    var LANGS = {
+      php: {
+        line: ["//", "#"], block: [["/*", "*/"]], str: [Q.s, Q.d],
+        varRe: /^\$+[A-Za-z_]\w*/,
+        kw: words("abstract and array as break callable case catch class clone const continue declare default do echo else elseif empty enddeclare endfor endforeach endif endswitch endwhile enum extends final finally fn for foreach function global goto if implements include include_once instanceof insteadof interface isset list match namespace new or print private protected public readonly require require_once return static switch throw trait try unset use while xor yield"),
+        typ: words("int float string bool array object mixed void null true false self parent static iterable callable never")
+      },
+      js: {
+        line: ["//"], block: [["/*", "*/"]], str: [Q.s, Q.d, Q.b],
+        kw: words("as async await break case catch class const continue debugger declare default delete do else enum export extends finally for from function get if implements import in infer instanceof interface is keyof let namespace new of private protected public readonly return satisfies set static super switch this throw try type typeof var void while with yield"),
+        typ: words("any bigint boolean false never null number object string symbol true undefined unknown Array Promise Record Partial Ref ComputedRef")
+      },
+      go: {
+        line: ["//"], block: [["/*", "*/"]], str: [Q.s, Q.d, { q: "`", multi: true }],
+        kw: words("break case chan const continue default defer else fallthrough for func go goto if import interface map package range return select struct switch type var"),
+        typ: words("bool byte complex64 complex128 error float32 float64 int int8 int16 int32 int64 rune string uint uint8 uint16 uint32 uint64 uintptr any nil true false iota make new len cap append copy delete panic recover")
+      },
+      sql: {
+        line: ["--", "#"], block: [["/*", "*/"]], str: [Q.s], ident: [Q.b], ci: true,
+        kw: words("ADD ALTER AND AS ASC AUTO_INCREMENT BEGIN BETWEEN BY CASE CHARSET COLLATE COMMENT COMMIT CONSTRAINT CREATE CROSS CURRENT_TIMESTAMP DATABASE DEFAULT DELETE DESC DISTINCT DROP ELSE END ENGINE EXISTS FOREIGN FROM FULL GROUP HAVING IF IN INDEX INNER INSERT INTO IS JOIN KEY LEFT LIKE LIMIT NOT NULL OFFSET ON OR ORDER OUTER PRIMARY REFERENCES RENAME REPLACE RIGHT ROLLBACK SELECT SET SHOW TABLE THEN TRUE FALSE UNION UNIQUE UNSIGNED UPDATE USING VALUES VIEW WHEN WHERE WITH ZEROFILL"),
+        typ: words("BIGINT BINARY BIT BLOB BOOL BOOLEAN CHAR DATE DATETIME DECIMAL DOUBLE ENUM FLOAT INT INTEGER JSON LONGBLOB LONGTEXT MEDIUMINT MEDIUMTEXT SMALLINT TEXT TIME TIMESTAMP TINYINT VARBINARY VARCHAR YEAR")
+      },
+      py: {
+        line: ["#"], str: [{ q: '"""', esc: true, multi: true }, { q: "'''", esc: true, multi: true }, Q.s, Q.d],
+        kw: words("and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case"),
+        typ: words("None True False self int float str bool list dict set tuple bytes Optional Any")
+      },
+      sh: {
+        line: ["#"], str: [Q.s, Q.d], varRe: /^\$(?:\{[^}]*\}|[A-Za-z_]\w*|[0-9@*#?$!])/,
+        kw: words("if then elif else fi for while until do done case esac function return local export readonly declare set unset source shift trap exit in"),
+        typ: words("echo cd ls cat grep sed awk git python3 mkdir rm cp mv true false")
+      },
+      json: { str: [Q.d], typ: words("true false null") },
+      yaml: { line: ["#"], str: [Q.s, Q.d], typ: words("true false null yes no on off") },
+      hcl: {
+        line: ["#", "//"], block: [["/*", "*/"]], str: [Q.d],
+        varRe: /^\$\{[^}]*\}/,
+        kw: words("resource variable module output locals data provider terraform for_each count depends_on dynamic lifecycle if for in"),
+        typ: words("string number bool list map object set any true false null var local each")
+      },
+      css: {
+        block: [["/*", "*/"]], str: [Q.s, Q.d],
+        kw: words("important media supports keyframes import use forward mixin include extend if else"),
+        typ: words("inherit initial unset auto none var calc")
+      },
+      html: { html: true },
+      plain: {}
+    };
+
+    var ALIAS = {
+      javascript: "js", typescript: "js", ts: "js", tsx: "js", jsx: "js", mjs: "js", cjs: "js",
+      vue: "html", htm: "html", xml: "html", svg: "html", twig: "html", blade: "html",
+      mysql: "sql", psql: "sql", postgres: "sql", schema: "sql",
+      python: "py", bash: "sh", zsh: "sh", shell: "sh", console: "sh",
+      yml: "yaml", tf: "hcl", terraform: "hcl", hcl: "hcl", scss: "css", sass: "css", less: "css",
+      golang: "go"
+    };
+    var EXT = {
+      php: "php", vue: "html", html: "html", htm: "html", xml: "html", js: "js", mjs: "js",
+      cjs: "js", jsx: "js", ts: "js", tsx: "js", go: "go", sql: "sql", json: "json",
+      yml: "yaml", yaml: "yaml", sh: "sh", bash: "sh", py: "py", css: "css", scss: "css",
+      tf: "hcl", tfvars: "hcl"
+    };
+
+    function resolve(lang, path, kind) {
+      var l = (lang || "").toLowerCase();
+      l = ALIAS[l] || l;
+      if (!LANGS[l] && path) {
+        var m = String(path).match(/\.([A-Za-z0-9]+)$/);
+        if (m) l = EXT[m[1].toLowerCase()] || "";
+      }
+      if (!LANGS[l] && kind === "schema") l = "sql";
+      return LANGS[l] ? l : "plain";
+    }
+
+    function sp(cls, text) { return '<span class="' + cls + '">' + esc(text) + "</span>"; }
+
+    /* 終端 tok の直後の index を返す。無ければ -1 */
+    function findEnd(line, from, tok, escapable) {
+      var i = from;
+      while (i < line.length) {
+        if (escapable && line.charAt(i) === "\\") { i += 2; continue; }
+        if (line.substr(i, tok.length) === tok) return i + tok.length;
+        i++;
+      }
+      return -1;
+    }
+    function startsWith(rest, list) {
+      if (!list) return null;
+      for (var i = 0; i < list.length; i++) if (rest.indexOf(list[i]) === 0) return list[i];
+      return null;
+    }
+
+    function scanCode(line, st, L) {
+      var out = "", i = 0, buf = "";
+      function flush() { if (buf) { out += esc(buf); buf = ""; } }
+
+      while (i < line.length) {
+        if (st.cont) {
+          flush();
+          var e = findEnd(line, i, st.cont.end, st.cont.esc);
+          if (e < 0) { out += sp(st.cont.cls, line.slice(i)); return out; }
+          out += sp(st.cont.cls, line.slice(i, e));
+          i = e; st.cont = null; continue;
+        }
+        var rest = line.slice(i);
+
+        var lc = startsWith(rest, L.line);
+        if (lc) { flush(); out += sp("c-com", rest); return out; }
+
+        if (L.block) {
+          for (var b = 0; b < L.block.length; b++) {
+            if (rest.indexOf(L.block[b][0]) === 0) {
+              flush();
+              var close = L.block[b][1];
+              var be = findEnd(line, i + L.block[b][0].length, close, false);
+              if (be < 0) { st.cont = { end: close, cls: "c-com", esc: false }; out += sp("c-com", line.slice(i)); return out; }
+              out += sp("c-com", line.slice(i, be)); i = be;
+              break;
+            }
+          }
+          if (st.cont) return out;
+          if (b < L.block.length) continue;
+        }
+
+        var quoted = null, cls = "c-str";
+        var pools = [[L.str, "c-str"], [L.ident, "c-typ"]];
+        for (var p = 0; p < pools.length && !quoted; p++) {
+          var pool = pools[p][0];
+          if (!pool) continue;
+          for (var s = 0; s < pool.length; s++) {
+            if (rest.indexOf(pool[s].q) === 0) { quoted = pool[s]; cls = pools[p][1]; break; }
+          }
+        }
+        if (quoted) {
+          flush();
+          var se = findEnd(line, i + quoted.q.length, quoted.q, quoted.esc);
+          if (se < 0) {
+            if (quoted.multi) st.cont = { end: quoted.q, cls: cls, esc: !!quoted.esc };
+            out += sp(cls, line.slice(i));
+            return out;
+          }
+          out += sp(cls, line.slice(i, se)); i = se; continue;
+        }
+
+        if (L.varRe) {
+          var vm = rest.match(L.varRe);
+          if (vm) { flush(); out += sp("c-var", vm[0]); i += vm[0].length; continue; }
+        }
+
+        var nm = rest.match(/^(?:0[xXbBoO][0-9a-fA-F_]+|\d[\d_]*(?:\.\d+)?(?:[eE][+-]?\d+)?)/);
+        if (nm && !/[\w$]/.test(line.charAt(i - 1) || "")) {
+          flush(); out += sp("c-num", nm[0]); i += nm[0].length; continue;
+        }
+
+        var im = rest.match(/^[A-Za-z_][\w]*/);
+        if (im) {
+          var w = im[0], key = L.ci ? w.toUpperCase() : w, k = null;
+          if (L.kw && L.kw[key]) k = "c-kw";
+          else if (L.typ && L.typ[key]) k = "c-typ";
+          else if (/^\s*\(/.test(rest.slice(w.length))) k = "c-fn";
+          if (k) { flush(); out += sp(k, w); } else buf += w;
+          i += w.length; continue;
+        }
+
+        buf += line.charAt(i); i++;
+      }
+      flush();
+      return out;
+    }
+
+    function scanHtml(line, st) {
+      var out = "", i = 0, buf = "";
+      function flush() { if (buf) { out += esc(buf); buf = ""; } }
+
+      while (i < line.length) {
+        if (st.cont) {
+          flush();
+          var e = findEnd(line, i, st.cont.end, st.cont.esc);
+          if (e < 0) { out += sp(st.cont.cls, line.slice(i)); return out; }
+          out += sp(st.cont.cls, line.slice(i, e));
+          i = e; st.cont = null;
+          if (st.contAfterTag) { st.inTag = true; st.contAfterTag = false; }
+          continue;
+        }
+        var rest = line.slice(i);
+
+        if (st.inTag) {
+          if (rest.charAt(0) === ">" || rest.indexOf("/>") === 0) {
+            var t = rest.indexOf("/>") === 0 ? "/>" : ">";
+            buf += t; i += t.length; st.inTag = false; continue;
+          }
+          var q = rest.charAt(0);
+          if (q === '"' || q === "'") {
+            flush();
+            var se = findEnd(line, i + 1, q, false);
+            if (se < 0) {
+              st.cont = { end: q, cls: "c-str", esc: false }; st.contAfterTag = true; st.inTag = false;
+              out += sp("c-str", line.slice(i)); return out;
+            }
+            out += sp("c-str", line.slice(i, se)); i = se; continue;
+          }
+          var am = rest.match(/^[@:#v\-]?[A-Za-z_][\w:.\-]*/);
+          if (am) { flush(); out += sp("c-attr", am[0]); i += am[0].length; continue; }
+          buf += rest.charAt(0); i++; continue;
+        }
+
+        if (rest.indexOf("<!--") === 0) {
+          flush();
+          var ce = findEnd(line, i + 4, "-->", false);
+          if (ce < 0) { st.cont = { end: "-->", cls: "c-com", esc: false }; out += sp("c-com", line.slice(i)); return out; }
+          out += sp("c-com", line.slice(i, ce)); i = ce; continue;
+        }
+        var tm = rest.match(/^<\/?([A-Za-z][\w:.\-]*)/);
+        if (tm) {
+          flush();
+          var lead = tm[0].charAt(1) === "/" ? "</" : "<";
+          out += esc(lead) + sp("c-tag", tm[1]);
+          i += tm[0].length; st.inTag = true; continue;
+        }
+        var mm = rest.match(/^\{\{[^}]*\}\}/);
+        if (mm) { flush(); out += sp("c-var", mm[0]); i += mm[0].length; continue; }
+
+        buf += rest.charAt(0); i++;
+      }
+      flush();
+      return out;
+    }
+
+    return {
+      resolve: resolve,
+      /* lines: string[] -> ハイライト済み HTML の配列 */
+      render: function (lines, langId) {
+        var L = LANGS[langId] || LANGS.plain;
+        var st = { cont: null, inTag: false, contAfterTag: false };
+        var plain = langId === "plain";
+        return lines.map(function (line) {
+          if (plain) return esc(line);
+          try {
+            return L.html ? scanHtml(line, st) : scanCode(line, st, L);
+          } catch (e) { return esc(line); }
+        });
+      }
+    };
+  })();
+
+  /* ---------- minimal markdown (inline + fence + list) ---------- */
+  function inline(s) {
+    var out = esc(s);
+    out = out.replace(/`([^`]+)`/g, function (_, c) { return "<code>" + c + "</code>"; });
+    out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return out;
+  }
+  function fencePre(fence) {
+    return "<pre>" + HL.render(fence.lines, HL.resolve(fence.lang)).join("\n") + "</pre>";
+  }
+  function md(src) {
+    var lines = String(src == null ? "" : src).split("\n");
+    var html = "", i = 0, fence = null, buf = [];
+    function flushList(tag) { if (buf.length) { html += "<" + tag + ">" + buf.join("") + "</" + tag + ">"; buf = []; } }
+    for (; i < lines.length; i++) {
+      var line = lines[i];
+      if (fence !== null) {
+        if (/^\s*```/.test(line)) { html += fencePre(fence); fence = null; }
+        else fence.lines.push(line);
+        continue;
+      }
+      var fm = line.match(/^\s*```\s*([A-Za-z0-9+#.-]*)/);
+      if (fm) { flushList("ul"); fence = { lang: fm[1] || "", lines: [] }; continue; }
+      var m = line.match(/^\s*(?:[-*]|\d+\.)\s+(.*)$/);
+      if (m) { buf.push("<li>" + inline(m[1]) + "</li>"); continue; }
+      flushList("ul");
+      if (/^\s*$/.test(line)) continue;
+      html += "<p>" + inline(line) + "</p>";
+    }
+    if (fence !== null) html += fencePre(fence);
+    flushList("ul");
+    return html;
+  }
+
+  /* ---------- refs ---------- */
+  var KIND_LABEL = {
+    code: "code", confluence: "doc", github: "github",
+    schema: "schema", link: "link", note: "note"
+  };
+
+  function codeTable(ref) {
+    var lines = String(ref.snippet == null ? "" : ref.snippet).replace(/\n$/, "").split("\n");
+    var start = ref.startLine || 1;
+    var hl = ref.highlight || [];
+    var from = hl[0], to = hl.length > 1 ? hl[1] : hl[0];
+    var painted = HL.render(lines, HL.resolve(ref.lang, ref.path, ref.kind));
+    var rows = lines.map(function (line, idx) {
+      var n = start + idx;
+      var on = from != null && n >= from && n <= to;
+      return '<tr class="' + (on ? "hl" : "") + '"><td class="ln">' + n +
+             '</td><td>' + painted[idx] + "</td></tr>";
+    }).join("");
+    return '<div class="snippet"><table class="code">' + rows + "</table></div>";
+  }
+
+  function refNode(ref, openAll) {
+    var d = el("details", { class: "ref" });
+    if (openAll || ref.open) d.open = true;
+
+    var sum = el("summary");
+    sum.appendChild(el("span", { class: "kind" }, esc(KIND_LABEL[ref.kind] || ref.kind || "ref")));
+    sum.appendChild(el("span", { class: "label" }, esc(ref.label || ref.path || ref.url || "")));
+    var acts = el("div", { class: "summary-actions" });
+    if (ref.url) {
+      var a = el("a", { href: ref.url, target: "_blank", rel: "noopener" }, "開く&nbsp;↗");
+      a.addEventListener("click", function (e) { e.stopPropagation(); });
+      acts.appendChild(a);
+    }
+    if (ref.path) {
+      var pb = el("button", { type: "button", title: ref.path }, "パスをコピー");
+      pb.addEventListener("click", function (e) {
+        e.preventDefault(); e.stopPropagation();
+        copyText(ref.path + (ref.startLine ? ":" + (ref.highlight && ref.highlight[0] || ref.startLine) : ""), "パスをコピーしたわ");
+      });
+      acts.appendChild(pb);
+    }
+    sum.appendChild(acts);
+    d.appendChild(sum);
+
+    var body = el("div", { class: "ref-body" });
+    if (ref.kind === "code" || ref.kind === "schema") {
+      if (ref.snippet) body.innerHTML = codeTable(ref);
+      else body.appendChild(el("div", { class: "excerpt mono" }, esc(ref.excerpt || "（本文なし）")));
+    } else {
+      body.appendChild(el("div", { class: "excerpt" }, ref.excerpt ? md(ref.excerpt) : "（本文なし）"));
+    }
+    d.appendChild(body);
+    return d;
+  }
+
+  /* ---------- cards ---------- */
+  function isDone(id) {
+    var e = state[id];
+    return !!(e && ((e.text && e.text.trim()) || e.choice));
+  }
+
+  function cardNode(item) {
+    var openAll = document.getElementById("expandAll").checked;
+    var card = el("section", { class: "card" + (isDone(item.id) ? " done" : ""), "data-id": item.id });
+
+    var head = el("div", { class: "card-head" });
+    head.appendChild(el("span", { class: "qid" }, esc(item.id)));
+    if (item.severity) head.appendChild(el("span", { class: "tag " + item.severity }, esc(item.severity)));
+    if (item.category) head.appendChild(el("span", { class: "tag" }, esc(item.category)));
+    if (item.title) head.appendChild(el("span", { class: "sub" }, esc(item.title)));
+    head.appendChild(el("span", { class: "spacer" }));
+    if (item.verbatim === false) {
+      head.appendChild(el("span", {
+        class: "tag diff",
+        title: "質問文が元テキストと一致しなかったわ。「元テキストを見る」で原文を確認して"
+      }, "原文と差異あり"));
+    }
+    var badge = el("span", { class: "tag done", "data-role": "badge" }, "回答済");
+    badge.style.display = isDone(item.id) ? "" : "none";
+    head.appendChild(badge);
+    card.appendChild(head);
+
+    card.appendChild(el("div", { class: "q-body" }, md(item.question)));
+
+    if (item.note) card.appendChild(el("div", { class: "note" }, "補足: " + inline(item.note)));
+
+    if (item.refs && item.refs.length) {
+      var refs = el("div", { class: "refs" });
+      item.refs.forEach(function (r) { refs.appendChild(refNode(r, openAll)); });
+      card.appendChild(refs);
+    }
+
+    var ans = el("div", { class: "answer" });
+    var e = entry(item.id);
+    if (item.options && item.options.length) {
+      var opts = el("div", { class: "opts" });
+      item.options.forEach(function (opt, i) {
+        var lab = el("label");
+        var radio = el("input", { type: "radio", name: "opt-" + item.id, value: opt });
+        if (e.choice === opt) radio.checked = true;
+        radio.addEventListener("change", function () {
+          entry(item.id).choice = opt; saveState(); refreshCard(card, item);
+        });
+        lab.appendChild(radio);
+        lab.appendChild(el("span", null, inline(opt)));
+        opts.appendChild(lab);
+      });
+      ans.appendChild(opts);
+    }
+    var ta = el("textarea", { placeholder: "ここに回答を書いて（Ctrl/⌘+Enter で次の未回答へ）", spellcheck: "false" });
+    ta.value = e.text || "";
+    ta.addEventListener("input", function () {
+      entry(item.id).text = ta.value; saveState(); refreshCard(card, item);
+    });
+    ta.addEventListener("keydown", function (ev) {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key === "Enter") { ev.preventDefault(); focusNextUnanswered(item.id); }
+    });
+    ans.appendChild(ta);
+
+    var foot = el("div", { class: "answer-foot" });
+    var cb = el("button", { type: "button" }, "この回答をコピー");
+    cb.addEventListener("click", function () { copyText(formatOne(item), item.id + " をコピーしたわ"); });
+    foot.appendChild(cb);
+    var clr = el("button", { type: "button" }, "クリア");
+    clr.addEventListener("click", function () {
+      state[item.id] = { text: "", choice: null }; saveState();
+      ta.value = "";
+      var rs = card.querySelectorAll('input[type="radio"]');
+      for (var i = 0; i < rs.length; i++) rs[i].checked = false;
+      refreshCard(card, item);
+    });
+    foot.appendChild(clr);
+    ans.appendChild(foot);
+    card.appendChild(ans);
+    return card;
+  }
+
+  function groupNode(sev, items) {
+    var d = el("details", { class: "group", "data-sev": sev.key });
+    d.open = ui.groups[sev.key] != null ? ui.groups[sev.key] : sev.open;
+
+    var sum = el("summary", { class: "group-head" });
+    sum.appendChild(el("span", { class: "tag " + (sev.key || "") }, esc(sev.name)));
+    if (sev.desc) sum.appendChild(el("span", { class: "group-desc" }, esc(sev.desc)));
+    sum.appendChild(el("span", { class: "spacer" }));
+    sum.appendChild(el("span", { class: "group-count", "data-role": "count" }, ""));
+    var cb = el("button", { type: "button" }, "この Tier をコピー");
+    cb.addEventListener("click", function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var answered = items.filter(function (it) { return isDone(it.id); });
+      if (!answered.length) return toast(sev.name + " はまだ回答が無いわ");
+      copyText(answered.map(formatOne).join("\n") + "\n", sev.name + " の回答をコピーしたわ");
+    });
+    sum.appendChild(cb);
+    d.appendChild(sum);
+
+    var body = el("div", { class: "group-body" });
+    items.forEach(function (it) { body.appendChild(cardNode(it)); });
+    d.appendChild(body);
+
+    d.addEventListener("toggle", function () { ui.groups[sev.key] = d.open; saveUi(); });
+    return d;
+  }
+
+  function updateGroupCounts() {
+    document.querySelectorAll("details.group").forEach(function (g) {
+      var total = g.querySelectorAll(".card").length;
+      var done = g.querySelectorAll(".card.done").length;
+      var c = g.querySelector('[data-role="count"]');
+      if (c) c.textContent = done + " / " + total + " 回答済";
+      g.classList.toggle("all-done", total > 0 && done === total);
+    });
+  }
+
+  function refreshCard(card, item) {
+    var done = isDone(item.id);
+    card.classList.toggle("done", done);
+    var badge = card.querySelector('[data-role="badge"]');
+    if (badge) badge.style.display = done ? "" : "none";
+    updateProgress();
+    updateGroupCounts();
+    if (document.getElementById("filterUnanswered").checked) {
+      if (done) sticky[item.id] = true;
+      applyFilter();
+    }
+  }
+
+  /* 移動先は「画面に見えている順（DOM順）」で探す。
+     Tier でまとめていると ITEMS の原文順と画面順が食い違って、遠くへ飛んでしまうため。 */
+  function focusNextUnanswered(afterId) {
+    var cards = [].slice.call(document.querySelectorAll(".card"));
+    var idx = -1;
+    for (var k = 0; k < cards.length; k++) {
+      if (cards[k].getAttribute("data-id") === afterId) { idx = k; break; }
+    }
+    var order = cards.slice(idx + 1).concat(cards.slice(0, idx + 1));
+    for (var i = 0; i < order.length; i++) {
+      var id = order[i].getAttribute("data-id");
+      if (id === afterId) continue;
+      if (order[i].style.display === "none") continue;
+      if (!isDone(id)) return focusCard(id);
+    }
+    toast("未回答はもう無いわ。お疲れさま");
+  }
+  function focusCard(id) {
+    var card = document.querySelector('.card[data-id="' + CSS.escape(id) + '"]');
+    if (!card) return;
+    var g = card.closest("details.group");
+    if (g && !g.open) g.open = true;
+    var ta = card.querySelector("textarea");
+    if (ta) ta.focus({ preventScroll: true });
+    if (card.scrollIntoView) card.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function updateProgress() {
+    var done = ITEMS.filter(function (it) { return isDone(it.id); }).length;
+    document.getElementById("progressText").textContent = done + " / " + ITEMS.length + " 回答済";
+    document.getElementById("progressBar").style.width =
+      (ITEMS.length ? Math.round(done / ITEMS.length * 100) : 0) + "%";
+  }
+
+  /* 「未回答のみ」表示中に回答したカードを覚えておく箱。
+     入力した瞬間に足元のカードが消えると並びが動いて視点が飛ぶので、消さずに残す。
+     チェックを付け直すと空になり、そこで整理される。 */
+  var sticky = {};
+
+  function applyFilter() {
+    var only = document.getElementById("filterUnanswered").checked;
+    var active = document.activeElement;
+    var shown = 0;
+    document.querySelectorAll(".card").forEach(function (card) {
+      var id = card.getAttribute("data-id");
+      var editing = active && card.contains(active);
+      var hide = only && card.classList.contains("done") && !editing && !sticky[id];
+      card.style.display = hide ? "none" : "";
+      if (!hide) shown++;
+    });
+    document.querySelectorAll("details.group").forEach(function (g) {
+      var visible = 0;
+      g.querySelectorAll(".card").forEach(function (c) { if (c.style.display !== "none") visible++; });
+      g.style.display = visible ? "" : "none";
+    });
+    var empty = document.getElementById("emptyMsg");
+    if (empty) empty.style.display = shown ? "none" : "";
+  }
+
+  /* ---------- copy formatting (回答のみ) ---------- */
+  function answerLine(item) {
+    var e = state[item.id] || {};
+    var parts = [];
+    if (e.choice) parts.push("[" + e.choice + "]");
+    if (e.text && e.text.trim()) parts.push(e.text.trim());
+    return parts.join(" ");
+  }
+  function formatOne(item) {
+    var body = answerLine(item);
+    if (!body) return item.id + ": （未回答）";
+    if (body.indexOf("\n") === -1) return item.id + ": " + body;
+    return item.id + ":\n" + body.split("\n").map(function (l) { return "  " + l; }).join("\n");
+  }
+  function formatAll() {
+    var answered = ITEMS.filter(function (it) { return isDone(it.id); });
+    var missing = ITEMS.length - answered.length;
+    var head = [];
+    if (META.title) head.push("# " + META.title + " 回答");
+    if (missing) head.push("（未回答 " + missing + " 件は除外）");
+    var body = answered.map(formatOne).join("\n");
+    return (head.length ? head.join("\n") + "\n\n" : "") + body + "\n";
+  }
+
+  /* ---------- boot ---------- */
+  document.title = META.title || "確認事項";
+  document.getElementById("pageTitle").textContent = META.title || "確認事項";
+  document.getElementById("pageSub").textContent =
+    [META.date, META.topic, META.source].filter(Boolean).join(" / ");
+
+  var cbGroup = document.getElementById("groupBySeverity");
+  var cbFilter = document.getElementById("filterUnanswered");
+  var cbExpand = document.getElementById("expandAll");
+  cbGroup.checked = !!ui.grouped;
+  cbFilter.checked = !!ui.filterUnanswered;
+  cbExpand.checked = !!ui.expandAll;
+
+  var main = document.getElementById("cards");
+  function renderAll() {
+    main.innerHTML = "";
+    if (ui.grouped) {
+      SEV.forEach(function (sev) {
+        var items = ITEMS.filter(function (it) { return (it.severity || "") === sev.key; });
+        if (items.length) main.appendChild(groupNode(sev, items));
+      });
+    } else {
+      ITEMS.forEach(function (item) { main.appendChild(cardNode(item)); });
+    }
+    main.appendChild(el("div", { class: "empty", id: "emptyMsg" }, "表示する項目が無いわ"));
+    document.getElementById("emptyMsg").style.display = "none";
+    updateProgress();
+    updateGroupCounts();
+    applyFilter();
+  }
+  renderAll();
+
+  cbGroup.addEventListener("change", function () {
+    ui.grouped = this.checked; saveUi(); renderAll();
+  });
+  cbFilter.addEventListener("change", function () {
+    ui.filterUnanswered = this.checked; saveUi();
+    sticky = {};
+    applyFilter();
+    if (this.checked) toast("未回答のみ表示中。ここで回答したカードは並びが動かないよう残すわ");
+  });
+  cbExpand.addEventListener("change", function () {
+    ui.expandAll = this.checked; saveUi();
+    var open = this.checked;
+    document.querySelectorAll("details.ref").forEach(function (d) { d.open = open; });
+  });
+
+  function doCopy() {
+    if (!ITEMS.some(function (it) { return isDone(it.id); })) return toast("まだ回答が1件も無いわ");
+    copyText(formatAll(), "回答をコピーしたわ");
+  }
+  document.getElementById("btnCopyTop").addEventListener("click", doCopy);
+  document.getElementById("btnCopyBottom").addEventListener("click", doCopy);
+
+  var dlg = document.getElementById("copyDialog");
+  document.getElementById("btnPreview").addEventListener("click", function () {
+    document.getElementById("dlgText").value = formatAll();
+    if (dlg.showModal) dlg.showModal(); else toast(formatAll());
+  });
+  document.getElementById("dlgClose").addEventListener("click", function () { dlg.close(); });
+  document.getElementById("dlgCopy").addEventListener("click", function () {
+    copyText(document.getElementById("dlgText").value, "コピーしたわ");
+  });
+
+  var srcDlg = document.getElementById("sourceDialog");
+  if (META.sourceText) {
+    var srcBtn = document.getElementById("btnSource");
+    srcBtn.hidden = false;
+    document.getElementById("srcText").textContent = META.sourceText;
+    srcBtn.addEventListener("click", function () {
+      if (srcDlg.showModal) srcDlg.showModal();
+    });
+    document.getElementById("srcClose").addEventListener("click", function () { srcDlg.close(); });
+    document.getElementById("srcCopy").addEventListener("click", function () {
+      copyText(META.sourceText, "原文をコピーしたわ");
+    });
+  }
+  if (ITEMS.some(function (it) { return it.verbatim === false; })) {
+    hint("一部の質問文が原文と一致していないわ。「元テキストを見る」で確認して");
+  }
+
+  document.getElementById("btnExport").addEventListener("click", function () {
+    var payload = { meta: META, answers: state };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (META.id || "qa") + "-answers.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  var fileInput = document.getElementById("fileImport");
+  document.getElementById("btnImport").addEventListener("click", function () { fileInput.click(); });
+  fileInput.addEventListener("change", function () {
+    var f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var p = JSON.parse(fr.result);
+        state = p.answers || p;
+        saveState(); renderAll(); toast("回答を読み込んだわ");
+      } catch (e) { toast("JSON が読めなかったわ"); }
+    };
+    fr.readAsText(f);
+    fileInput.value = "";
+  });
+  document.getElementById("btnClear").addEventListener("click", function () {
+    if (!confirm("この端末に保存した回答を全部消すわよ。いい？")) return;
+    state = {}; saveState(); renderAll(); toast("消したわ");
+  });
+})();
+</script>
+</body>
+</html>

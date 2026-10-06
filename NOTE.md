@@ -19,6 +19,15 @@
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/settings.json ~/.claude/
   - hooks で claude-state.sh を呼び、tmux のタブに作業中/入力待ちの色を付けている
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/themes/darcula.json ~/.claude/themes/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/CLAUDE.md ~/.claude/
+  - rules/ は CLAUDE.md から `@~/dev/dotfiles/agent/claude/rules/...` で読むので、dotfiles を ~/dev/dotfiles に置く
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/hooks/ja_style_hook.py ~/.claude/hooks/
+  - プロジェクトだけで足したい語は、そのプロジェクトの .claude/ja-style-words.json に書く
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/agents/review-qa-page.md ~/.claude/agents/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/agents/review-qa-page ~/.claude/agents/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/prompt-interview ~/.claude/skills/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/repo-page ~/.claude/skills/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/issue-refinement ~/.claude/skills/
 
 ## 例外
 

@@ -1,0 +1,1370 @@
+<meta charset="utf-8">
+<title>__REPO_PAGE_TITLE__</title>
+<style>
+:root{
+  --blue:#29b6f6;
+  --blue-deep:#0288d1;
+  --blue-soft:#e8f6fe;
+  --pink:#ffa9bd;
+  --pink-deep:#ec5f86;
+  --pink-soft:#fff6f8;
+  --bg:#ffffff;
+  --panel:#fafafb;
+  --panel-2:#f0f1f2;
+  --code-bg:#fafafb;
+  --ink:#15181a;
+  --ink-2:#5a6166;
+  --ink-3:#8b9297;
+  --line:#e4e6e8;
+  --line-2:#ced1d4;
+  --link:var(--blue-deep);
+  --sel-bg:var(--blue-soft);
+  --hover-bg:var(--pink-soft);
+  --mark-bg:#ffdde5;
+  --mark-ink:#8e2b4c;
+  --press-ink:#3b1220;
+  --shadow:0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.07);
+  --ui:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono","Noto Sans Mono CJK JP",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --blue:#4fc3f7;
+    --blue-deep:#81d4fa;
+    --blue-soft:#123542;
+    --pink:#ff9fb6;
+    --pink-deep:#ffb3c6;
+    --pink-soft:#2b2025;
+    --bg:#17191b;
+    --panel:#1e2123;
+    --panel-2:#272a2d;
+    --code-bg:#1b1e20;
+    --ink:#e9ebed;
+    --ink-2:#a8aeb3;
+    --ink-3:#7c8388;
+    --line:#2e3235;
+    --line-2:#404549;
+    --link:#7fd3fa;
+    --mark-bg:#4a2533;
+    --mark-ink:#ffc8d6;
+    --press-ink:#2a0d17;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --blue:#4fc3f7;
+  --blue-deep:#81d4fa;
+  --blue-soft:#123542;
+  --pink:#ff9fb6;
+  --pink-deep:#ffb3c6;
+  --pink-soft:#2b2025;
+  --bg:#17191b;
+  --panel:#1e2123;
+  --panel-2:#272a2d;
+  --code-bg:#1b1e20;
+  --ink:#e9ebed;
+  --ink-2:#a8aeb3;
+  --ink-3:#7c8388;
+  --line:#2e3235;
+  --line-2:#404549;
+  --link:#7fd3fa;
+  --mark-bg:#4a2533;
+  --mark-ink:#ffc8d6;
+  --press-ink:#2a0d17;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.32);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--ui);font-size:14px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+button,input{font:inherit;color:inherit}
+a{color:var(--link)}
+
+#app{display:flex;flex-direction:column;height:100dvh;min-height:100dvh}
+
+.topbar{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:10px 16px;border-bottom:1px solid var(--line);
+  background:var(--panel);
+}
+.topbar .lead{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1 1 260px}
+.topbar h1{
+  margin:0;font-size:15px;font-weight:700;letter-spacing:.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.topbar h1::before{
+  content:"";display:inline-block;width:3px;height:1em;margin-right:8px;
+  vertical-align:-.12em;border-radius:2px;background:var(--blue-deep);
+}
+.topbar .sub{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.search{position:relative;flex:0 1 320px;min-width:180px}
+.search input{
+  width:100%;padding:7px 30px 7px 11px;border:1px solid var(--line-2);border-radius:7px;
+  background:var(--bg);
+}
+.search input:focus{outline:2px solid var(--blue);outline-offset:-1px;border-color:var(--blue)}
+.search .hint{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);pointer-events:none;
+}
+.search input:focus + .hint{display:none}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 11px;border:1px solid var(--line-2);border-radius:7px;
+  background:var(--bg);cursor:pointer;white-space:nowrap;font-size:12.5px;
+}
+.btn:hover{background:var(--hover-bg);border-color:var(--pink)}
+.btn:active{background:var(--pink);border-color:var(--pink-deep);color:var(--press-ink)}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.btn[aria-pressed="true"]{background:var(--sel-bg);border-color:var(--blue)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--hover-bg);color:var(--ink)}
+
+.stat{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+.body{flex:1;display:grid;grid-template-columns:minmax(210px,264px) 1fr;min-height:0}
+
+.side{
+  border-right:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;min-height:0;
+}
+.side-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 10px 8px 12px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+}
+.side-scroll{overflow:auto;padding:6px 0 20px;flex:1}
+
+.tree ul{list-style:none;margin:0;padding:0}
+.tree li{margin:0}
+.tree .dir > button,.tree .file{
+  display:flex;align-items:center;gap:7px;width:100%;
+  padding:3px 10px 3px 0;border:0;background:none;text-align:left;
+  cursor:pointer;color:var(--ink-2);font-size:13px;line-height:1.5;
+}
+.tree .dir > button:hover,.tree .file:hover{background:var(--hover-bg);color:var(--ink)}
+.tree .file{border-left:3px solid transparent}
+.tree .file.on{
+  background:var(--sel-bg);color:var(--ink);font-weight:600;
+  border-left-color:var(--blue-deep);
+}
+.tree .file .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tree .dir > button{font-weight:600;color:var(--ink)}
+.tree .caret{
+  flex:none;width:12px;text-align:center;font-size:9px;color:var(--ink-3);
+  transition:transform .12s ease;
+}
+.tree .dir.closed .caret{transform:rotate(-90deg)}
+.tree .dir.closed > ul{display:none}
+.tree .tag{
+  flex:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.02em;
+  padding:0 4px;border-radius:3px;background:var(--panel-2);color:var(--ink-3);
+}
+.tree .file.on .tag{background:var(--bg);color:var(--blue-deep)}
+.tree .file.dim .nm{color:var(--ink-3);font-style:italic}
+
+.hits{list-style:none;margin:0;padding:0}
+.hits li{border-bottom:1px solid var(--line)}
+.hits button{
+  display:block;width:100%;padding:7px 12px;border:0;background:none;
+  text-align:left;cursor:pointer;border-left:3px solid transparent;
+}
+.hits button:hover{background:var(--hover-bg);border-left-color:var(--pink)}
+.hits .hp{font-family:var(--mono);font-size:11px;color:var(--blue-deep);word-break:break-all}
+.hits .hl{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-2);
+  white-space:pre-wrap;word-break:break-all;margin-top:2px;
+  max-height:3.4em;overflow:hidden;
+}
+.hits .hn{font-family:var(--mono);font-size:10px;color:var(--ink-3)}
+.empty{padding:18px 14px;color:var(--ink-3);font-size:12.5px}
+
+.toc{list-style:none;margin:0;padding:4px 0 0}
+.toc button{
+  display:block;width:100%;padding:2px 10px 2px 12px;border:0;background:none;
+  text-align:left;cursor:pointer;color:var(--ink-2);font-size:12px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.toc button:hover{background:var(--hover-bg);color:var(--ink)}
+.toc .d2{padding-left:22px}
+.toc .d3{padding-left:32px;font-size:11.5px;color:var(--ink-3)}
+
+.main{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--bg)}
+.filebar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 16px;border-bottom:1px solid var(--line);background:var(--panel);
+}
+.filebar .who{flex:1 1 240px;min-width:0}
+.filebar .pth{
+  font-family:var(--mono);font-size:12.5px;word-break:break-all;
+}
+.filebar .pth .seg{color:var(--ink-3)}
+.filebar .pth .cur{color:var(--ink);font-weight:600}
+.filebar .facts{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:1px;
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+}
+.filebar .acts{display:flex;gap:6px;flex-wrap:wrap}
+.tabs{display:flex;gap:2px;background:var(--panel-2);border-radius:7px;padding:2px}
+.tabs button{
+  padding:4px 10px;border:0;border-radius:5px;background:none;cursor:pointer;
+  font-size:12px;color:var(--ink-2);
+}
+.tabs button[aria-pressed="true"]{background:var(--bg);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tabs button:hover{color:var(--ink)}
+
+.scroll{overflow:auto;flex:1;min-height:0}
+
+.note{
+  margin:20px 16px;padding:14px 16px;border-radius:9px;
+  border:1px solid var(--line-2);background:var(--panel);max-width:62ch;
+}
+.note h3{margin:0 0 4px;font-size:13.5px}
+.note p{margin:0;color:var(--ink-2);font-size:13px}
+.note.warn{border-color:var(--pink);background:var(--pink-soft)}
+.note code{font-family:var(--mono);font-size:12px}
+
+.code{font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:8px 0 40px}
+.code .ln{
+  display:grid;grid-template-columns:var(--gut,4ch) 1fr;gap:12px;
+  padding-right:16px;white-space:pre;
+}
+.code.wrap .ln{white-space:pre-wrap;word-break:break-word}
+.code .ln::before{
+  content:attr(data-n);text-align:right;color:var(--ink-3);
+  font-variant-numeric:tabular-nums;user-select:none;
+  border-right:1px solid var(--line);padding-right:6px;position:sticky;left:0;
+  background:var(--bg);
+}
+.code .ln > .tx{min-width:0}
+.code .ln:hover{background:var(--hover-bg)}
+.code .ln.on{background:var(--mark-bg)}
+mark{background:var(--mark-bg);color:var(--mark-ink);border-radius:2px;padding:0 1px}
+.code .ln.on mark{background:var(--pink);color:var(--press-ink)}
+
+.imgview{padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.imgview img{
+  max-width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel);
+  box-shadow:var(--shadow);
+}
+.imgview.full img{max-width:none}
+.imgview .cap{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+
+.frame{width:100%;height:100%;min-height:70vh;border:0;background:#fff}
+
+.csvwrap{overflow:auto;padding:12px 16px 40px}
+table.csv{border-collapse:collapse;font-family:var(--mono);font-size:12px}
+table.csv th,table.csv td{
+  border:1px solid var(--line);padding:3px 8px;text-align:left;white-space:pre;
+  max-width:42ch;overflow:hidden;text-overflow:ellipsis;
+}
+table.csv thead th{background:var(--panel-2);position:sticky;top:0;font-weight:600}
+table.csv tbody tr:nth-child(2n){background:var(--panel)}
+table.csv tbody tr:hover{background:var(--hover-bg)}
+table.csv td.num{text-align:right;font-variant-numeric:tabular-nums}
+table.csv .rn{color:var(--ink-3);text-align:right;background:var(--panel-2)}
+
+.doc{
+  padding:26px 22px 80px;max-width:var(--doc-w,76ch);margin:0 auto;
+  font-size:15px;line-height:1.85;
+}
+.doc[data-width="full"]{padding-inline:34px}
+.doc>*:first-child{margin-top:0}
+.doc h1,.doc h2,.doc h3,.doc h4,.doc h5,.doc h6{
+  line-height:1.4;text-wrap:balance;margin:1.9em 0 .6em;font-weight:700;
+}
+.doc h1{font-size:1.65em;margin-top:0;padding-bottom:.3em;border-bottom:2px solid var(--blue-deep)}
+.doc h2{font-size:1.3em;padding-bottom:.25em;border-bottom:1px solid var(--line)}
+.doc h3{font-size:1.1em}
+.doc h4{font-size:1em;color:var(--ink-2)}
+.doc p{margin:.9em 0}
+.doc ul,.doc ol{margin:.8em 0;padding-left:1.5em}
+.doc li{margin:.25em 0}
+.doc li>ul,.doc li>ol{margin:.2em 0}
+.doc li.task{list-style:none;margin-left:-1.2em}
+.doc li.task input{margin-right:6px}
+.doc blockquote{
+  margin:1em 0;padding:.1em 1em;border-left:3px solid var(--pink);
+  background:var(--pink-soft);border-radius:0 6px 6px 0;color:var(--ink-2);
+}
+.doc hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+.doc code{
+  font-family:var(--mono);font-size:.86em;padding:.12em .35em;
+  background:var(--panel-2);border-radius:4px;
+}
+.doc pre{
+  margin:1.1em 0;padding:12px 14px;background:var(--code-bg);
+  border:1px solid var(--line);border-radius:8px;overflow-x:auto;
+}
+.doc pre code{background:none;padding:0;font-size:12.5px;line-height:1.6}
+.doc pre.mermaid{border-style:dashed}
+.doc .fence{position:relative}
+.doc .fence>.btn{position:absolute;top:6px;right:6px;opacity:0;transition:opacity .12s}
+.doc .fence:hover>.btn,.doc .fence>.btn:focus-visible{opacity:1}
+.doc .fence .lang{
+  position:absolute;top:8px;left:12px;font-family:var(--mono);font-size:10px;
+  color:var(--ink-3);letter-spacing:.04em;
+}
+.doc table{border-collapse:collapse;margin:1.2em 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+.doc th,.doc td{border:1px solid var(--line);padding:6px 11px;text-align:left}
+.doc thead th{background:var(--panel-2);font-weight:700;white-space:nowrap}
+.doc tbody tr:nth-child(2n){background:var(--panel)}
+.doc td.num,.doc th.num{text-align:right;font-variant-numeric:tabular-nums}
+.doc img{max-width:100%;border-radius:6px;border:1px solid var(--line)}
+.doc a.missing{color:var(--ink-2);text-decoration:underline dotted}
+.doc .anchor{
+  opacity:0;margin-left:.3em;font-size:.7em;text-decoration:none;color:var(--blue-deep);
+}
+.doc h1:hover .anchor,.doc h2:hover .anchor,.doc h3:hover .anchor{opacity:1}
+
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  padding:9px 16px 9px 14px;border-radius:8px;background:var(--ink);color:var(--bg);
+  border-left:3px solid var(--pink-deep);
+  font-size:13px;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transition:opacity .16s ease,transform .16s ease;z-index:40;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.scrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.42);opacity:0;pointer-events:none;
+  transition:opacity .16s;z-index:20;
+}
+#tree-toggle{display:none}
+
+@media (max-width:760px){
+  .body{grid-template-columns:1fr}
+  #tree-toggle{display:inline-flex}
+  .side{
+    position:fixed;inset:0 auto 0 0;width:min(88vw,320px);z-index:30;
+    transform:translateX(-102%);transition:transform .18s ease;box-shadow:var(--shadow);
+  }
+  body.drawer .side{transform:none}
+  body.drawer .scrim{opacity:1;pointer-events:auto}
+  .doc,.doc[data-width="full"]{padding:20px 16px 70px;font-size:14.5px}
+  #f-width{display:none}
+  .topbar{padding:8px 16px;gap:10px}
+  .search{flex:1 1 100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+
+<div id="app">
+  <header class="topbar">
+    <button class="btn ghost" id="tree-toggle" aria-expanded="false">ファイル</button>
+    <div class="lead">
+      <h1 id="page-title"></h1>
+      <span class="sub" id="page-sub"></span>
+    </div>
+    <div class="search">
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="ファイル名と中身を検索">
+      <span class="hint">/</span>
+    </div>
+    <span class="stat" id="page-counts"></span>
+    <button class="btn" id="copy-all">全文をコピー</button>
+    <button class="btn" id="save-zip">まとめて保存</button>
+  </header>
+  <div class="body">
+    <nav class="side" id="side">
+      <div class="side-head">
+        <span id="side-label">ファイル</span>
+        <button class="btn ghost" id="collapse-all">折りたたむ</button>
+      </div>
+      <div class="side-scroll" id="side-scroll"></div>
+    </nav>
+    <main class="main">
+      <div class="filebar">
+        <div class="who">
+          <div class="pth" id="f-path"></div>
+          <div class="facts" id="f-facts"></div>
+        </div>
+        <div class="tabs" id="f-tabs"></div>
+        <div class="tabs" id="f-width" hidden></div>
+        <div class="acts">
+          <button class="btn" id="act-copy">内容をコピー</button>
+          <button class="btn" id="act-save">保存</button>
+          <button class="btn" id="act-path">パスをコピー</button>
+          <a class="btn" id="act-gh" hidden target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="scroll" id="pane"></div>
+    </main>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script id="repo-data" type="application/json">__REPO_PAGE_DATA__</script>
+<script>
+(function(){
+"use strict";
+var DATA = JSON.parse(document.getElementById('repo-data').textContent);
+var FILES = DATA.files;
+var META = DATA.meta;
+var BY_PATH = {};
+FILES.forEach(function(f){ BY_PATH[f.path] = f; });
+
+var state = {
+  path: '',
+  mode: 'render',
+  wrap: false,
+  imgFull: false,
+  query: '',
+  jump: 0,
+  closed: {},
+  width: 'normal'
+};
+var DOC_WIDTH = [['normal', '普通', '76ch'], ['wide', '広め', '108ch'], ['full', '全幅', 'none']];
+
+function store(key, val){
+  try{
+    if (val === undefined) return localStorage.getItem('repo-page:' + META.root + ':' + key);
+    localStorage.setItem('repo-page:' + META.root + ':' + key, val);
+  }catch(e){}
+  return null;
+}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function human(n){
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n/1024).toFixed(1) + ' KB';
+  return (n/1048576).toFixed(2) + ' MB';
+}
+function el(tag, cls, text){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+var toastTimer;
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 2200);
+}
+function copyText(text, msg){
+  var done = function(){ toast(msg || 'コピーした'); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ legacyCopy(text, done); });
+  } else {
+    legacyCopy(text, done);
+  }
+}
+function legacyCopy(text, done){
+  var ta = el('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  var ok = false;
+  try{ ok = document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if (ok) done(); else toast('コピーできなかった。手で選択してほしい');
+}
+
+/* ---------- markdown ---------- */
+
+function inline(src, ctx){
+  var codes = [];
+  var s = src.replace(/`([^`]+)`/g, function(m, code){
+    codes.push(code);
+    return '\u0000' + (codes.length - 1) + '\u0000';
+  });
+  s = esc(s);
+  s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function(m, alt, src2){
+    var hit = ctx.asset(src2);
+    if (hit) return '<img src="' + hit + '" alt="' + esc(alt) + '">';
+    if (/^https?:/.test(src2)) return '<img src="' + esc(src2) + '" alt="' + esc(alt) + '">';
+    return '<span class="missing">[画像 ' + esc(src2) + ' は載っていない]</span>';
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, function(m, label, href){
+    var local = ctx.link(href);
+    if (local) return '<a href="#/' + encodeURI(local) + '">' + label + '</a>';
+    if (/^(https?:|mailto:|#)/.test(href)) return '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + label + '</a>';
+    return '<a class="missing" title="このページには無いファイル">' + label + '</a>';
+  });
+  s = s.replace(/(^|[\s(])(https?:\/\/[^\s<>")\]]+)/g, function(m, pre, url){
+    return pre + '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url) + '</a>';
+  });
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+  s = s.replace(/\u0000(\d+)\u0000/g, function(m, i){
+    return '<code>' + esc(codes[+i]) + '</code>';
+  });
+  return s;
+}
+
+function slug(text){
+  return text.toLowerCase().replace(/[^\w぀-ヿ㐀-鿿-]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function mdToHtml(src, ctx){
+  var lines = src.replace(/\r\n?/g, '\n').split('\n');
+  var out = [];
+  var toc = [];
+  var i = 0;
+  var listStack = [];
+
+  function closeLists(depth){
+    while (listStack.length > depth){
+      var top = listStack.pop();
+      out.push(top.ordered ? '</ol>' : '</ul>');
+      if (top.nested) out.push('</li>');
+    }
+  }
+
+  function openList(ordered){
+    var nested = false;
+    if (listStack.length && out.length && /<\/li>\s*$/.test(out[out.length - 1])){
+      out[out.length - 1] = out[out.length - 1].replace(/<\/li>\s*$/, '');
+      nested = true;
+    }
+    out.push(ordered ? '<ol>' : '<ul>');
+    listStack.push({ordered: ordered, nested: nested});
+  }
+
+  while (i < lines.length){
+    var line = lines[i];
+    var fence = line.match(/^\s{0,3}(```+|~~~+)\s*([\w.+-]*)/);
+    if (fence){
+      closeLists(0);
+      var mark = fence[1][0];
+      var lang = fence[2] || '';
+      var buf = [];
+      i++;
+      while (i < lines.length && !new RegExp('^\\s{0,3}' + (mark === '`' ? '```' : '~~~')).test(lines[i])){
+        buf.push(lines[i]); i++;
+      }
+      i++;
+      var code = buf.join('\n');
+      if (lang === 'mermaid'){
+        out.push('<pre class="mermaid">' + esc(code) + '</pre>');
+      } else {
+        out.push('<div class="fence">' +
+          (lang ? '<span class="lang">' + esc(lang) + '</span>' : '') +
+          '<button class="btn" data-copy="' + esc(code) + '">コピー</button>' +
+          '<pre><code>' + esc(code) + '</code></pre></div>');
+      }
+      continue;
+    }
+
+    var head = line.match(/^(#{1,6})\s+(.*)$/);
+    if (head){
+      closeLists(0);
+      var depth = head[1].length;
+      var text = head[2].replace(/\s+#+\s*$/, '');
+      var id = 'h-' + slug(text) + '-' + toc.length;
+      toc.push({depth: depth, text: text.replace(/[`*_]/g, ''), id: id});
+      out.push('<h' + depth + ' id="' + id + '">' + inline(text, ctx) +
+        '<a class="anchor" href="#/' + encodeURI(ctx.path) + '@' + id + '" aria-label="この見出しへのリンク">#</a></h' + depth + '>');
+      i++;
+      continue;
+    }
+
+    if (/^\s{0,3}(-\s*){3,}$|^\s{0,3}(\*\s*){3,}$|^\s{0,3}(_\s*){3,}$/.test(line)){
+      closeLists(0);
+      out.push('<hr>');
+      i++;
+      continue;
+    }
+
+    if (/^\s{0,3}\|/.test(line) && i + 1 < lines.length && /^\s{0,3}\|?[\s:|-]+\|[\s:|-]*$/.test(lines[i+1])){
+      closeLists(0);
+      var cells = function(row){
+        var r = row.trim().replace(/^\|/, '').replace(/\|$/, '');
+        return r.split(/(?<!\\)\|/).map(function(c){ return c.trim().replace(/\\\|/g, '|'); });
+      };
+      var headCells = cells(line);
+      var aligns = cells(lines[i+1]).map(function(c){
+        if (/^:-+:$/.test(c)) return 'center';
+        if (/-+:$/.test(c)) return 'right';
+        return '';
+      });
+      i += 2;
+      var rows = [];
+      while (i < lines.length && /^\s{0,3}\|/.test(lines[i])){
+        rows.push(cells(lines[i])); i++;
+      }
+      var t = ['<table><thead><tr>'];
+      headCells.forEach(function(c, n){
+        t.push('<th' + (aligns[n] === 'right' ? ' class="num"' : '') +
+          (aligns[n] ? ' style="text-align:' + aligns[n] + '"' : '') + '>' + inline(c, ctx) + '</th>');
+      });
+      t.push('</tr></thead><tbody>');
+      rows.forEach(function(r){
+        t.push('<tr>');
+        headCells.forEach(function(_, n){
+          var v = r[n] == null ? '' : r[n];
+          var numish = aligns[n] === 'right' ||
+            (!aligns[n] && /^[\d,.\-+%¥$\s]+$/.test(v) && /\d/.test(v));
+          t.push('<td' + (numish ? ' class="num"' : '') +
+            (aligns[n] ? ' style="text-align:' + aligns[n] + '"' : '') + '>' + inline(v, ctx) + '</td>');
+        });
+        t.push('</tr>');
+      });
+      t.push('</tbody></table>');
+      out.push(t.join(''));
+      continue;
+    }
+
+    var quote = line.match(/^\s{0,3}>\s?(.*)$/);
+    if (quote){
+      closeLists(0);
+      var qbuf = [];
+      while (i < lines.length){
+        var q = lines[i].match(/^\s{0,3}>\s?(.*)$/);
+        if (!q) break;
+        qbuf.push(q[1]); i++;
+      }
+      out.push('<blockquote>' + mdToHtml(qbuf.join('\n'), ctx).html + '</blockquote>');
+      continue;
+    }
+
+    var item = line.match(/^(\s*)([-*+]|\d+[.)])\s+(.*)$/);
+    if (item){
+      var indent = item[1].replace(/\t/g, '    ').length;
+      var ordered = /\d/.test(item[2]);
+      var level = Math.floor(indent / 2) + 1;
+      if (level > listStack.length + 1) level = listStack.length + 1;
+      while (listStack.length > level) closeLists(listStack.length - 1);
+      if (listStack.length < level){
+        openList(ordered);
+      } else if (listStack.length === level && listStack[level-1].ordered !== ordered){
+        closeLists(level - 1);
+        openList(ordered);
+      }
+      var body = item[3];
+      var task = body.match(/^\[([ xX])\]\s+(.*)$/);
+      if (task){
+        out.push('<li class="task"><input type="checkbox" disabled' +
+          (task[1] === ' ' ? '' : ' checked') + '>' + inline(task[2], ctx) + '</li>');
+      } else {
+        out.push('<li>' + inline(body, ctx) + '</li>');
+      }
+      i++;
+      continue;
+    }
+
+    if (!line.trim()){
+      closeLists(0);
+      i++;
+      continue;
+    }
+
+    if (/^\s{0,3}<(\/?)(div|table|thead|tbody|tr|td|th|details|summary|img|br|p|span|ul|ol|li|h[1-6])\b/i.test(line)){
+      closeLists(0);
+      out.push(line);
+      i++;
+      continue;
+    }
+
+    var para = [];
+    while (i < lines.length && lines[i].trim() &&
+           !/^\s{0,3}(#{1,6}\s|```|~~~|>|\||[-*+]\s|\d+[.)]\s)/.test(lines[i])){
+      para.push(lines[i]); i++;
+    }
+    if (para.length){
+      closeLists(0);
+      out.push('<p>' + inline(para.join('\n'), ctx) + '</p>');
+    } else {
+      i++;
+    }
+  }
+  closeLists(0);
+  return {html: out.join('\n'), toc: toc};
+}
+
+function contextFor(file){
+  var dir = file.dir;
+  function resolve(href){
+    var clean = href.split('#')[0].split('?')[0];
+    if (!clean || /^[a-z]+:/i.test(clean) || clean.charAt(0) === '#') return null;
+    var base = clean.charAt(0) === '/' ? clean.replace(/^\//, '') : (dir ? dir + '/' + clean : clean);
+    var parts = [];
+    base.split('/').forEach(function(p){
+      if (p === '.' || p === '') return;
+      if (p === '..') parts.pop(); else parts.push(p);
+    });
+    var key = parts.join('/');
+    return BY_PATH[key] ? key : null;
+  }
+  return {
+    path: file.path,
+    link: resolve,
+    asset: function(href){
+      var key = resolve(href);
+      return key && BY_PATH[key].dataUri ? BY_PATH[key].dataUri : null;
+    }
+  };
+}
+
+/* ---------- csv ---------- */
+
+function parseCsv(text, delim){
+  var rows = [];
+  var row = [];
+  var cell = '';
+  var quoted = false;
+  for (var i = 0; i < text.length; i++){
+    var c = text[i];
+    if (quoted){
+      if (c === '"'){
+        if (text[i+1] === '"'){ cell += '"'; i++; }
+        else quoted = false;
+      } else cell += c;
+      continue;
+    }
+    if (c === '"'){ quoted = true; continue; }
+    if (c === delim){ row.push(cell); cell = ''; continue; }
+    if (c === '\n'){ row.push(cell); rows.push(row); row = []; cell = ''; continue; }
+    if (c === '\r') continue;
+    cell += c;
+  }
+  if (cell !== '' || row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+
+/* ---------- tree ---------- */
+
+function buildTree(){
+  var root = {dirs: {}, files: []};
+  FILES.forEach(function(f){
+    var node = root;
+    var parts = f.path.split('/');
+    for (var i = 0; i < parts.length - 1; i++){
+      if (!node.dirs[parts[i]]) node.dirs[parts[i]] = {dirs: {}, files: [], path: parts.slice(0, i+1).join('/')};
+      node = node.dirs[parts[i]];
+    }
+    node.files.push(f);
+  });
+  return root;
+}
+
+function fileRank(f){
+  var n = f.name.toLowerCase();
+  if (/^readme/.test(n)) return 0;
+  if (f.kind === 'markdown') return 1;
+  if (f.status !== 'ok') return 3;
+  return 2;
+}
+
+function renderTree(){
+  var host = document.getElementById('side-scroll');
+  host.innerHTML = '';
+  var wrap = el('div', 'tree');
+
+  function renderNode(node, depth){
+    var ul = el('ul');
+    Object.keys(node.dirs).sort().forEach(function(name){
+      var d = node.dirs[name];
+      var li = el('li', 'dir' + (state.closed[d.path] ? ' closed' : ''));
+      var btn = el('button');
+      btn.style.paddingLeft = (8 + depth * 12) + 'px';
+      btn.appendChild(el('span', 'caret', '▾'));
+      btn.appendChild(el('span', 'nm', name));
+      var live = countIn(d);
+      btn.appendChild(el('span', 'tag', String(live)));
+      btn.addEventListener('click', function(){
+        li.classList.toggle('closed');
+        state.closed[d.path] = li.classList.contains('closed');
+        store('closed', JSON.stringify(state.closed));
+      });
+      li.appendChild(btn);
+      li.appendChild(renderNode(d, depth + 1));
+      ul.appendChild(li);
+    });
+    node.files.slice().sort(function(a, b){
+      return fileRank(a) - fileRank(b) || a.name.localeCompare(b.name);
+    }).forEach(function(f){
+      var li = el('li');
+      var btn = el('button', 'file' + (f.path === state.path ? ' on' : '') +
+        (f.status === 'ok' ? '' : ' dim'));
+      btn.style.paddingLeft = (14 + depth * 12) + 'px';
+      btn.dataset.path = f.path;
+      btn.appendChild(el('span', 'nm', f.name));
+      btn.appendChild(el('span', 'tag', f.status === 'blocked' ? '除外' :
+        f.status === 'omitted' ? '—' : (f.ext || 'txt')));
+      btn.addEventListener('click', function(){ open(f.path); closeDrawer(); });
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function countIn(node){
+    var n = node.files.length;
+    Object.keys(node.dirs).forEach(function(k){ n += countIn(node.dirs[k]); });
+    return n;
+  }
+
+  wrap.appendChild(renderNode(buildTree(), 0));
+  host.appendChild(wrap);
+
+  var cur = FILES.filter(function(f){ return f.path === state.path; })[0];
+  if (cur && cur.kind === 'markdown' && state.toc && state.toc.length > 1){
+    var head = el('div', 'side-head');
+    head.style.marginTop = '10px';
+    head.appendChild(el('span', null, '見出し'));
+    host.appendChild(head);
+    var list = el('ul', 'toc');
+    state.toc.forEach(function(h){
+      if (h.depth > 3) return;
+      var li = el('li');
+      var b = el('button', 'd' + h.depth, h.text);
+      b.addEventListener('click', function(){
+        var target = document.getElementById(h.id);
+        if (target) target.scrollIntoView({block: 'start', behavior: 'smooth'});
+        closeDrawer();
+      });
+      li.appendChild(b);
+      list.appendChild(li);
+    });
+    host.appendChild(list);
+  }
+  document.getElementById('side-label').textContent = 'ファイル ' + FILES.length;
+  document.getElementById('collapse-all').hidden = false;
+}
+
+/* ---------- search ---------- */
+
+function runSearch(q){
+  var needle = q.toLowerCase();
+  var nameHits = [];
+  var textHits = [];
+  FILES.forEach(function(f){
+    if (f.path.toLowerCase().indexOf(needle) >= 0) nameHits.push({file: f});
+    var body = f.content;
+    if (!body) return;
+    var lines = body.split('\n');
+    var found = 0;
+    for (var i = 0; i < lines.length && found < 4; i++){
+      if (lines[i].toLowerCase().indexOf(needle) >= 0){
+        textHits.push({file: f, line: i + 1, text: lines[i].trim().slice(0, 220)});
+        found++;
+      }
+    }
+  });
+  var host = document.getElementById('side-scroll');
+  host.innerHTML = '';
+  document.getElementById('side-label').textContent =
+    'ファイル名 ' + nameHits.length + ' / 中身 ' + textHits.length;
+  document.getElementById('collapse-all').hidden = true;
+  if (!nameHits.length && !textHits.length){
+    host.appendChild(el('p', 'empty', '見つからなかった'));
+    return;
+  }
+  var list = el('ul', 'hits');
+  nameHits.forEach(function(h){
+    list.appendChild(hitRow(h.file, 0, 'ファイル名が一致', q));
+  });
+  textHits.slice(0, 300).forEach(function(h){
+    list.appendChild(hitRow(h.file, h.line, h.text, q));
+  });
+  host.appendChild(list);
+}
+
+function hitRow(file, line, text, q){
+  var li = el('li');
+  var btn = el('button');
+  var p = el('div', 'hp', file.path);
+  if (line) p.appendChild(el('span', 'hn', '  :' + line));
+  btn.appendChild(p);
+  var body = el('div', 'hl');
+  body.innerHTML = mark(esc(text), q);
+  btn.appendChild(body);
+  btn.addEventListener('click', function(){
+    open(file.path, {jump: line, source: file.kind === 'markdown'});
+    closeDrawer();
+  });
+  li.appendChild(btn);
+  return li;
+}
+
+function mark(html, q){
+  if (!q) return html;
+  var safe = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return html.replace(new RegExp(safe, 'gi'), function(m){ return '<mark>' + m + '</mark>'; });
+}
+
+/* ---------- views ---------- */
+
+function open(path, opts){
+  opts = opts || {};
+  if (!BY_PATH[path]) return;
+  state.path = path;
+  state.jump = opts.jump || 0;
+  state.mode = opts.source ? 'source' : 'render';
+  state.imgFull = false;
+  state.anchor = opts.anchor || '';
+  store('last', path);
+  if (location.hash !== '#/' + encodeURI(path)){
+    try{ history.replaceState(null, '', '#/' + encodeURI(path)); }
+    catch(e){ location.hash = '/' + encodeURI(path); }
+  }
+  render();
+}
+
+function render(){
+  var f = BY_PATH[state.path];
+  if (!f) return;
+
+  var pth = document.getElementById('f-path');
+  pth.innerHTML = '';
+  var parts = f.path.split('/');
+  parts.forEach(function(p, n){
+    var last = n === parts.length - 1;
+    pth.appendChild(el('span', last ? 'cur' : 'seg', p));
+    if (!last) pth.appendChild(el('span', 'seg', ' / '));
+  });
+
+  var facts = document.getElementById('f-facts');
+  facts.innerHTML = '';
+  facts.appendChild(el('span', null, human(f.bytes)));
+  if (f.lines) facts.appendChild(el('span', null, f.lines + ' 行'));
+  if (f.lang) facts.appendChild(el('span', null, f.lang));
+  if (f.status === 'truncated') facts.appendChild(el('span', null, '一部だけ'));
+  if (f.suspect) facts.appendChild(el('span', null, '要確認: ' + f.suspect.join(' / ')));
+
+  var gh = document.getElementById('act-gh');
+  if (f.url){ gh.hidden = false; gh.href = f.url; } else { gh.hidden = true; }
+  var hasBody = !!f.content;
+  document.getElementById('act-copy').disabled = !hasBody;
+  document.getElementById('act-save').disabled = !hasBody && !f.dataUri;
+
+  var tabs = document.getElementById('f-tabs');
+  tabs.innerHTML = '';
+  var modes = [];
+  if (f.kind === 'markdown') modes = [['render', '本文'], ['source', '原文']];
+  else if (f.kind === 'html') modes = [['source', 'ソース'], ['render', '表示']];
+  else if (f.kind === 'csv') modes = [['render', '表'], ['source', '原文']];
+  if (modes.length){
+    modes.forEach(function(m){
+      var b = el('button', null, m[1]);
+      b.setAttribute('aria-pressed', state.mode === m[0] ? 'true' : 'false');
+      b.addEventListener('click', function(){ state.mode = m[0]; render(); });
+      tabs.appendChild(b);
+    });
+  }
+  if (f.kind === 'text' || f.kind === 'csv' || state.mode === 'source'){
+    var w = el('button', null, '折り返し');
+    w.setAttribute('aria-pressed', state.wrap ? 'true' : 'false');
+    w.addEventListener('click', function(){ state.wrap = !state.wrap; render(); });
+    tabs.appendChild(w);
+  }
+
+  var widths = document.getElementById('f-width');
+  var docMode = f.kind === 'markdown' && state.mode === 'render' && f.content;
+  widths.hidden = !docMode;
+  widths.innerHTML = '';
+  if (docMode){
+    DOC_WIDTH.forEach(function(w){
+      var b = el('button', null, w[1]);
+      b.setAttribute('aria-pressed', state.width === w[0] ? 'true' : 'false');
+      b.title = '本文の幅を' + w[1] + 'にする';
+      b.addEventListener('click', function(){
+        state.width = w[0];
+        store('width', w[0]);
+        render();
+      });
+      widths.appendChild(b);
+    });
+  }
+
+  var pane = document.getElementById('pane');
+  pane.innerHTML = '';
+  state.toc = null;
+
+  if (f.status === 'blocked'){
+    pane.appendChild(note('ページに載せていない', f.reason +
+      '。中身が必要なときは元のファイルを直接見てほしい。', true));
+  } else if (f.status === 'omitted'){
+    pane.appendChild(note('ページでは開けない', f.reason + '。'));
+  } else if (f.kind === 'image'){
+    var box = el('div', 'imgview' + (state.imgFull ? ' full' : ''));
+    var img = el('img');
+    img.src = f.dataUri;
+    img.alt = f.name;
+    img.addEventListener('click', function(){ state.imgFull = !state.imgFull; render(); });
+    box.appendChild(img);
+    box.appendChild(el('div', 'cap', f.name + ' — クリックで原寸と切り替え'));
+    pane.appendChild(box);
+  } else if (f.kind === 'markdown' && state.mode === 'render'){
+    var made = mdToHtml(f.content, contextFor(f));
+    state.toc = made.toc;
+    var doc = el('article', 'doc');
+    doc.dataset.width = state.width;
+    DOC_WIDTH.forEach(function(w){
+      if (w[0] === state.width) doc.style.setProperty('--doc-w', w[2]);
+    });
+    doc.innerHTML = made.html;
+    doc.querySelectorAll('[data-copy]').forEach(function(b){
+      b.addEventListener('click', function(){ copyText(b.dataset.copy, 'コードをコピーした'); });
+    });
+    pane.appendChild(doc);
+    if (f.status === 'truncated') pane.appendChild(note('続きがある', f.reason + '。'));
+  } else if (f.kind === 'html' && state.mode === 'render'){
+    var frame = el('iframe', 'frame');
+    frame.setAttribute('sandbox', 'allow-scripts allow-popups allow-forms allow-modals');
+    frame.setAttribute('srcdoc', f.content);
+    frame.title = f.name;
+    pane.appendChild(frame);
+  } else if (f.kind === 'csv' && state.mode === 'render'){
+    pane.appendChild(csvTable(f));
+  } else {
+    pane.appendChild(codeBlock(f.content, state.query, state.jump));
+    if (f.status === 'truncated') pane.appendChild(note('続きがある', f.reason + '。'));
+  }
+
+  if (state.query) renderSearchOrTree(); else renderTree();
+
+  if (state.jump){
+    var line = pane.querySelector('.ln[data-n="' + state.jump + '"]');
+    if (line){
+      line.classList.add('on');
+      line.scrollIntoView({block: 'center'});
+    }
+  } else if (state.anchor){
+    var target = document.getElementById(state.anchor);
+    if (target) target.scrollIntoView({block: 'start'});
+  } else {
+    pane.scrollTop = 0;
+  }
+}
+
+function note(title, body, warn){
+  var box = el('div', 'note' + (warn ? ' warn' : ''));
+  box.appendChild(el('h3', null, title));
+  box.appendChild(el('p', null, body));
+  return box;
+}
+
+function codeBlock(text, q, jump){
+  var box = el('div', 'code' + (state.wrap ? ' wrap' : ''));
+  var lines = text.split('\n');
+  if (lines.length && lines[lines.length - 1] === '') lines.pop();
+  box.style.setProperty('--gut', String(lines.length).length + 1 + 'ch');
+  var frag = document.createDocumentFragment();
+  lines.forEach(function(line, n){
+    var row = el('div', 'ln');
+    row.dataset.n = n + 1;
+    var tx = el('span', 'tx');
+    if (q) tx.innerHTML = mark(esc(line) || ' ', q);
+    else tx.textContent = line || ' ';
+    row.appendChild(tx);
+    frag.appendChild(row);
+  });
+  box.appendChild(frag);
+  return box;
+}
+
+function csvTable(f){
+  var wrap = el('div', 'csvwrap');
+  var delim = f.ext === 'tsv' ? '\t' : ',';
+  var rows = parseCsv(f.content, delim);
+  if (!rows.length) return note('中身がない', 'この表には行がない。');
+  var limit = 800;
+  var table = el('table', 'csv');
+  var thead = el('thead');
+  var htr = el('tr');
+  htr.appendChild(el('th', 'rn', '#'));
+  rows[0].forEach(function(c){ htr.appendChild(el('th', null, c)); });
+  thead.appendChild(htr);
+  table.appendChild(thead);
+  var tbody = el('tbody');
+  rows.slice(1, limit + 1).forEach(function(r, n){
+    var tr = el('tr');
+    tr.appendChild(el('td', 'rn', String(n + 1)));
+    rows[0].forEach(function(_, ci){
+      var v = r[ci] == null ? '' : r[ci];
+      tr.appendChild(el('td', /^-?[\d,.]+$/.test(v) && /\d/.test(v) ? 'num' : null, v));
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  var shown = Math.min(rows.length - 1, limit);
+  wrap.appendChild(el('div', 'cap', (rows[0].length) + ' 列 / ' + shown + ' 行を表示' +
+    (rows.length - 1 > limit ? '（全 ' + (rows.length - 1) + ' 行）' : '')));
+  return wrap;
+}
+
+function renderSearchOrTree(){
+  if (state.query) runSearch(state.query); else renderTree();
+}
+
+/* ---------- actions ---------- */
+
+var HOSTED = !!(window.claude && typeof window.claude.use === 'function');
+var DL = null;
+if (HOSTED){
+  try{
+    window.claude.use('downloads').then(function(ns){ DL = ns; }, function(){});
+  }catch(e){}
+}
+var SAVE_EXT = {gif:1,png:1,jpg:1,jpeg:1,webp:1,mp4:1,webm:1,txt:1,json:1,md:1,
+  docx:1,pptx:1,epub:1,csv:1,ttf:1,html:1,svg:1,pdf:1,xlsx:1,zip:1};
+
+function saveName(name){
+  var dot = name.lastIndexOf('.');
+  var ext = dot > 0 ? name.slice(dot + 1).toLowerCase() : '';
+  return SAVE_EXT[ext] ? name : name + '.txt';
+}
+
+function offerFile(name, data){
+  if (DL){
+    DL.save({filename: name, data: data}).then(function(r){
+      if (r && r.status === 'saved') toast(name + ' を保存した');
+    }, function(err){
+      var code = err && err.code;
+      if (code === 'declined') return;
+      if (code === 'rate_limited') toast('少し待ってからもう一度押してほしい');
+      else toast('保存できなかった（' + (code || '理由不明') + '）。コピーを使ってほしい');
+    });
+    return;
+  }
+  if (HOSTED){
+    toast('この画面では保存が使えない。コピーを使ってほしい');
+    return;
+  }
+  var blob = (data instanceof Blob) ? data : new Blob([data], {type: 'application/octet-stream'});
+  if (window.showSaveFilePicker){
+    window.showSaveFilePicker({suggestedName: name}).then(function(handle){
+      return handle.createWritable().then(function(w){
+        return w.write(blob).then(function(){ return w.close(); });
+      });
+    }).then(function(){ toast(name + ' を保存した'); }, function(err){
+      if (err && err.name === 'AbortError') return;
+      downloadUri(URL.createObjectURL(blob), name);
+    });
+  } else {
+    downloadUri(URL.createObjectURL(blob), name);
+  }
+}
+
+function downloadUri(uri, name){
+  var a = el('a');
+  a.href = uri;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function saveCurrent(){
+  var f = BY_PATH[state.path];
+  if (!f) return;
+  if (f.dataUri) offerFile(saveName(f.name), dataUriToBlob(f.dataUri));
+  else if (f.content) offerFile(saveName(f.name), f.content);
+}
+
+function dataUriToBlob(uri){
+  var parts = uri.split(',');
+  var mime = (parts[0].match(/:(.*?);/) || [null, 'application/octet-stream'])[1];
+  var bin = atob(parts[1]);
+  var buf = new Uint8Array(bin.length);
+  for (var i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+  return new Blob([buf], {type: mime});
+}
+
+var CRC_TABLE = (function(){
+  var t = new Uint32Array(256);
+  for (var n = 0; n < 256; n++){
+    var c = n;
+    for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes){
+  var c = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+
+function zipBlob(entries){
+  var enc = new TextEncoder();
+  var parts = [];
+  var central = [];
+  var offset = 0;
+  entries.forEach(function(e){
+    var nameBytes = enc.encode(e.name);
+    var crc = crc32(e.bytes);
+    var head = new DataView(new ArrayBuffer(30));
+    head.setUint32(0, 0x04034b50, true);
+    head.setUint16(4, 20, true);
+    head.setUint16(6, 0x0800, true);
+    head.setUint16(8, 0, true);
+    head.setUint16(10, 0, true);
+    head.setUint16(12, 0x0021, true);
+    head.setUint32(14, crc, true);
+    head.setUint32(18, e.bytes.length, true);
+    head.setUint32(22, e.bytes.length, true);
+    head.setUint16(26, nameBytes.length, true);
+    head.setUint16(28, 0, true);
+    parts.push(head.buffer, nameBytes, e.bytes);
+
+    var dir = new DataView(new ArrayBuffer(46));
+    dir.setUint32(0, 0x02014b50, true);
+    dir.setUint16(4, 20, true);
+    dir.setUint16(6, 20, true);
+    dir.setUint16(8, 0x0800, true);
+    dir.setUint16(10, 0, true);
+    dir.setUint16(12, 0, true);
+    dir.setUint16(14, 0x0021, true);
+    dir.setUint32(16, crc, true);
+    dir.setUint32(20, e.bytes.length, true);
+    dir.setUint32(24, e.bytes.length, true);
+    dir.setUint16(28, nameBytes.length, true);
+    dir.setUint16(30, 0, true);
+    dir.setUint16(32, 0, true);
+    dir.setUint16(34, 0, true);
+    dir.setUint16(36, 0, true);
+    dir.setUint32(38, 0, true);
+    dir.setUint32(42, offset, true);
+    central.push(dir.buffer, nameBytes);
+    offset += 30 + nameBytes.length + e.bytes.length;
+  });
+
+  var dirSize = central.reduce(function(n, b){ return n + (b.byteLength || b.length); }, 0);
+  var end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true);
+  end.setUint16(4, 0, true);
+  end.setUint16(6, 0, true);
+  end.setUint16(8, entries.length, true);
+  end.setUint16(10, entries.length, true);
+  end.setUint32(12, dirSize, true);
+  end.setUint32(16, offset, true);
+  end.setUint16(20, 0, true);
+  return new Blob(parts.concat(central, [end.buffer]), {type: 'application/zip'});
+}
+
+function saveAll(){
+  var enc = new TextEncoder();
+  var entries = [];
+  FILES.forEach(function(f){
+    var name = META.root + '/' + f.path;
+    if (f.content != null) entries.push({name: name, bytes: enc.encode(f.content)});
+    else if (f.dataUri){
+      var bin = atob(f.dataUri.split(',')[1]);
+      var buf = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      entries.push({name: name, bytes: buf});
+    }
+  });
+  if (!entries.length){ toast('保存できるファイルがない'); return; }
+  offerFile(META.root + '.zip', zipBlob(entries));
+}
+
+function allText(){
+  var parts = [META.title, META.source, ''];
+  FILES.forEach(function(f){
+    if (!f.content) return;
+    parts.push('===== ' + f.path + ' =====', f.content, '');
+  });
+  return parts.join('\n');
+}
+
+function closeDrawer(){ document.body.classList.remove('drawer'); }
+
+/* ---------- boot ---------- */
+
+document.getElementById('page-title').textContent = META.title;
+document.title = META.title;
+var sub = META.source + (META.subtitle ? ' — ' + META.subtitle : '');
+document.getElementById('page-sub').textContent = sub;
+var live = FILES.filter(function(f){ return f.status === 'ok' || f.status === 'truncated'; }).length;
+document.getElementById('page-counts').textContent =
+  live + '/' + FILES.length + ' ファイル · ' + human(META.totalBytes) + ' · ' + META.generatedAt;
+
+try{
+  var saved = store('closed');
+  if (saved) state.closed = JSON.parse(saved);
+}catch(e){}
+
+var savedWidth = store('width');
+if (savedWidth && DOC_WIDTH.some(function(w){ return w[0] === savedWidth; })) state.width = savedWidth;
+
+document.getElementById('q').addEventListener('input', function(e){
+  state.query = e.target.value.trim();
+  renderSearchOrTree();
+});
+document.getElementById('collapse-all').addEventListener('click', function(){
+  var all = {};
+  FILES.forEach(function(f){
+    var parts = f.path.split('/');
+    for (var i = 1; i < parts.length; i++) all[parts.slice(0, i).join('/')] = true;
+  });
+  var anyOpen = Object.keys(all).some(function(k){ return !state.closed[k]; });
+  state.closed = anyOpen ? all : {};
+  store('closed', JSON.stringify(state.closed));
+  renderTree();
+});
+document.getElementById('copy-all').addEventListener('click', function(){
+  copyText(allText(), FILES.filter(function(f){ return f.content; }).length + ' ファイルをコピーした');
+});
+document.getElementById('act-copy').addEventListener('click', function(){
+  var f = BY_PATH[state.path];
+  if (f && f.content) copyText(f.content, f.name + ' をコピーした');
+});
+document.getElementById('act-path').addEventListener('click', function(){
+  copyText(state.path, 'パスをコピーした');
+});
+document.getElementById('act-save').addEventListener('click', saveCurrent);
+document.getElementById('save-zip').addEventListener('click', saveAll);
+document.getElementById('tree-toggle').addEventListener('click', function(){
+  document.body.classList.toggle('drawer');
+  this.setAttribute('aria-expanded', document.body.classList.contains('drawer') ? 'true' : 'false');
+});
+document.getElementById('scrim').addEventListener('click', closeDrawer);
+
+document.addEventListener('keydown', function(e){
+  var box = document.getElementById('q');
+  if (e.key === 'Escape'){
+    if (document.activeElement === box){ box.value = ''; state.query = ''; renderSearchOrTree(); box.blur(); }
+    closeDrawer();
+    return;
+  }
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === '/'){ e.preventDefault(); box.focus(); box.select(); return; }
+  if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowDown' || e.key === 'ArrowUp'){
+    var order = [];
+    document.querySelectorAll('.tree .file').forEach(function(b){ order.push(b.dataset.path); });
+    if (!order.length) return;
+    var at = order.indexOf(state.path);
+    var next = (e.key === 'j' || e.key === 'ArrowDown') ? at + 1 : at - 1;
+    if (next >= 0 && next < order.length){ e.preventDefault(); open(order[next]); }
+  }
+});
+
+window.addEventListener('hashchange', function(){
+  var raw = decodeURI(location.hash.replace(/^#\//, ''));
+  var at = raw.split('@');
+  if (BY_PATH[at[0]] && (at[0] !== state.path || at[1])) open(at[0], {anchor: at[1]});
+});
+
+var first = decodeURI((location.hash || '').replace(/^#\//, '')).split('@')[0];
+if (!BY_PATH[first]) first = store('last');
+if (!first || !BY_PATH[first]) first = META.entry;
+open(first || FILES[0].path);
+})();
+</script>
