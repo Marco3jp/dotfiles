@@ -151,7 +151,7 @@ python3 ~/.claude/agents/review-qa-page/build.py \
   '<出力ディレクトリ>/data.json' '<出力ディレクトリ>/index.html'
 ```
 
-`build.py` が id 重複・`startLine` 欠落・不正な `kind` を検査して落とすので、エラーが出たら data.json を直して再実行する。テンプレート（`template.html`）を直接編集して出力を作らないこと。
+`build.py` が id 重複・`startLine` 欠落・不正な `kind` を検査してエラーで止まるので、エラーが出たら data.json を直して再実行する。テンプレート（`template.html`）を直接編集して出力を作らないこと。
 
 `verbatim=12/14` のように原文照合の結果が出る。`warn: 原文と一致しない質問文がある -> Q7` が出たら、**その項目の `question` を原文からコピーし直して再ビルドする**。警告を残したまま報告しない。
 
