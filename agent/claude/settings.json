@@ -1,5 +1,4 @@
 {
-  "language": "日本語",
   "pluginConfigs": {
     "agents-md@builtin": {
       "options": {
@@ -8,37 +7,19 @@
     }
   },
   "timeFormat": "24-hour",
-  "theme": "custom:darcula",
-  "editorMode": "normal",
-  "verbose": true,
-  "autoCompactEnabled": false,
   "autoScrollEnabled": true,
-  "statusLine": {
-    "type": "command",
-    "command": "sh /home/marco/.claude/statusline-command.sh"
-  },
+  "model": "opus[1m]",
   "hooks": {
-    "SessionStart": [
+    "Notification": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+            "command": "command -v osascript >/dev/null && osascript -e 'display notification \"べ、別にあなたの指示を待ってたりしないんだからね！\" with title \"ツンデレ萌え萌えClaude Code\"' sound name \"Purr\" || true"
           }
         ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
+      },
       {
         "hooks": [
           {
@@ -49,6 +30,86 @@
       }
     ],
     "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|NotebookEdit|mcp__",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/ja_style_hook.py"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/ja_style_hook.py"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -x \"$HOME/.local/bin/claude-usage-watch\" ] && $HOME/.local/bin/claude-usage-watch hook || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -x \"$HOME/.local/bin/claude-usage-watch\" ] && $HOME/.local/bin/claude-usage-watch hook || true",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
       {
         "hooks": [
           {
@@ -98,16 +159,6 @@
         ]
       }
     ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "Elicitation": [
       {
         "hooks": [
@@ -128,16 +179,6 @@
         ]
       }
     ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "StopFailure": [
       {
         "hooks": [
@@ -148,5 +189,36 @@
         ]
       }
     ]
-  }
+  },
+  "workflowKeywordTriggerEnabled": false,
+  "statusLine": {
+    "type": "command",
+    "command": "sh ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": false,
+    "figma@claude-plugins-official": false
+  },
+  "language": "日本語",
+  "sandbox": {
+    "network": {
+      "allowMachLookup": [
+        "com.apple.trustd.agent"
+      ]
+    }
+  },
+  "effortLevel": "high",
+  "promptSuggestionEnabled": false,
+  "dialogExpiry": "never",
+  "tui": "fullscreen",
+  "editorMode": "normal",
+  "verbose": true,
+  "preferredNotifChannel": "auto",
+  "autoCompactEnabled": false,
+  "switchModelsOnFlag": false,
+  "remoteControlAtStartup": false,
+  "inputNeededNotifEnabled": true,
+  "theme": "custom:darcula"
 }
