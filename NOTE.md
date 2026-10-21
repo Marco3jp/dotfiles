@@ -28,6 +28,7 @@
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/prompt-interview ~/.claude/skills/
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/repo-page ~/.claude/skills/
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/issue-refinement ~/.claude/skills/
+- ln -s $DOTFILES_ROOT_PWD/agent/claude/statusline-command.sh ~/.claude/
 
 ## 例外
 

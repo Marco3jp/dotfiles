@@ -56,6 +56,15 @@
             "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
           }
         ]
+      },
+      {
+        "matcher": "Bash|Write|Edit|NotebookEdit|mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/ja_style_hook.py"
+          }
+        ]
       }
     ],
     "PermissionRequest": [
@@ -134,6 +143,14 @@
           {
             "type": "command",
             "command": "~/.config/tmux/claude-state.sh 2>/dev/null || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/ja_style_hook.py"
           }
         ]
       }
