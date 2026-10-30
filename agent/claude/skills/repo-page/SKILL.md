@@ -88,7 +88,7 @@ Artifact(file_path: "<出力先>.html", favicon: "📁",
 | `--subtitle S` | なし | ヘッダーに出る1行 |
 | `--source S` | リポジトリ名/ディレクトリ名 | ヘッダーに出す出どころ |
 | `--entry PATH` | README.md | 最初に開くファイル |
-| `--exclude GLOB` | なし | ページに入れないもの。パスでもファイル名でも効く。何度でも渡せる |
+| `--exclude GLOB` | なし | ページに入れないもの。パスかファイル名のどちらかに一致すれば外れる。何度でも渡せる |
 | `--include GLOB` | なし | これに一致するものだけ載せる |
 | `--allow PATH` | なし | 既定で落ちるファイルを名指しで載せる（`--allow config/.env.example`） |
 | `--max-file-bytes N` | 262144 | これを超えるテキストは先頭だけ |
