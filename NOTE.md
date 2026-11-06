@@ -2,8 +2,6 @@
 
 dotfiles を各環境に配置する手順。
 
-リポジトリは `~/dev/dotfiles` に置く。agent/claude/CLAUDE.md が rules を `@~/dev/dotfiles/agent/claude/rules/...` で読むため。
-
 ## 必要なもの
 
 - jq: claude-state.sh・statusline-command.sh・build-settings.sh が使う
@@ -13,10 +11,10 @@ dotfiles を各環境に配置する手順。
 
 ## 配置する
 
-最初にこれを実行して、`$DOTFILES` を決め、リンク先のディレクトリを作る。
+最初にこれを実行して、`$DOTFILES` を決め、リンク先のディレクトリを作る。リポジトリはどこに置いてもよい。
 
 ```sh
-DOTFILES=~/dev/dotfiles
+DOTFILES=<リポジトリを置いたディレクトリ>
 mkdir -p ~/.config/tmux ~/.config/byobu ~/.claude/themes ~/.claude/hooks ~/.claude/agents ~/.claude/skills
 ```
 
@@ -42,6 +40,7 @@ ln -s $DOTFILES/byobu/.tmux.conf ~/.config/byobu/
 
 ```sh
 ln -s $DOTFILES/agent/claude/CLAUDE.md ~/.claude/
+ln -s $DOTFILES/agent/claude/rules ~/.claude/
 ln -s $DOTFILES/agent/claude/themes/darcula.json ~/.claude/themes/
 ln -s $DOTFILES/agent/claude/statusline-command.sh ~/.claude/
 ln -s $DOTFILES/agent/claude/hooks/ja_style_hook.py ~/.claude/hooks/
@@ -54,6 +53,7 @@ $DOTFILES/agent/claude/build-settings.sh --dry-run
 $DOTFILES/agent/claude/build-settings.sh --write
 ```
 
+- rules: ~/.claude/rules/ は Claude Code が自動で読むので、CLAUDE.md からは読み込まない
 - ~/.claude/settings.json はリンクにせず、build-settings.sh で書き出す。agent/claude/settings.json に ~/.claude/settings.*.json を重ねて作る。autoMode はユーザー設定からしか読まれないので、機械ごとの値を足せるようにしている
   - 重ねるとき、オブジェクトは中身ごとにまとめ、配列（hooks の各イベント・permissions.deny など）は後ろに足す
   - /config などで変えた値は次の書き出しで消える。残したい値は agent/claude/settings.json か settings.*.json に書く
