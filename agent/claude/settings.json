@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v osascript >/dev/null && osascript -e 'display notification \"べ、別にあなたの指示を待ってたりしないんだからね！\" with title \"ツンデレ萌え萌えClaude Code\"' sound name \"Purr\" || true"
+            "command": "if command -v osascript >/dev/null; then osascript -e 'display notification \"べ、別にあなたの指示を待ってたりしないんだからね！\" with title \"ツンデレ萌え萌えClaude Code\" sound name \"Purr\"'; elif command -v notify-send >/dev/null; then notify-send 'ツンデレ萌え萌えClaude Code' 'べ、別にあなたの指示を待ってたりしないんだからね！'; fi; true"
           }
         ]
       },
