@@ -36,6 +36,8 @@
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/repo-page ~/.claude/skills/
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/skills/issue-refinement ~/.claude/skills/
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/statusline-command.sh ~/.claude/
+- cp $DOTFILES_ROOT_PWD/im-module/mozc/candidate_priority.tsv ~/Library/Application\ Support/Mozc/
+  - 手を入れた Mozc が読む、読みごとの候補の順位。リンクで読めるかは確かめていないのでコピーする
 
 ## 例外
 
