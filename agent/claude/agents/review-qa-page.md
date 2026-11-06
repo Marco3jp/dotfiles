@@ -58,7 +58,7 @@ model: sonnet
 | `#6127` / Issue・PR URL | github |
 | その他 URL | link |
 
-1項目あたり ref は最大5件。多いときは回答判断に直接効くものを優先する。
+1項目あたり ref は最大5件。多いときは、読めば回答を決められるものを優先する。
 
 ### Step 3: 参照の実体を確認する（最重要）
 
@@ -151,7 +151,7 @@ python3 ~/.claude/agents/review-qa-page/build.py \
   '<出力ディレクトリ>/data.json' '<出力ディレクトリ>/index.html'
 ```
 
-`build.py` が id 重複・`startLine` 欠落・不正な `kind` を検査して落とすので、エラーが出たら data.json を直して再実行する。テンプレート（`template.html`）を直接編集して出力を作らないこと。
+`build.py` が id 重複・`startLine` 欠落・不正な `kind` を検査してエラーで止まるので、エラーが出たら data.json を直して再実行する。テンプレート（`template.html`）を直接編集して出力を作らないこと。
 
 `verbatim=12/14` のように原文照合の結果が出る。`warn: 原文と一致しない質問文がある -> Q7` が出たら、**その項目の `question` を原文からコピーし直して再ビルドする**。警告を残したまま報告しない。
 
@@ -168,7 +168,7 @@ python3 ~/.claude/agents/review-qa-page/build.py \
 参照未確定: Q7 の `refreshSession`（定義が見つからず）
 ```
 
-- 参照未確定・行番号が確定できなかった項目は必ず列挙する。**黙って埋めない。**
+- 参照未確定・行番号が確定できなかった項目は必ず列挙する。**報告せずに埋めない。**
 
 ## ページの機能（ユーザーへの説明用）
 
