@@ -14,6 +14,10 @@
 - ln -s $DOTFILES_ROOT_PWD/tmux/.tmux.conf ~/
 - ln -s $DOTFILES_ROOT_PWD/tmux/mem.sh ~/.config/tmux/
 - ln -s $DOTFILES_ROOT_PWD/tmux/claude-state.sh ~/.config/tmux/
+- ln -s $DOTFILES_ROOT_PWD/tmux/ticker.py ~/.config/tmux/
+  - 地域・ニュースのカテゴリ・速さは ~/.config/tmux/local.conf に `set-environment -g TICKER_JMA_OFFICE 270000` のように書いて変える（値は ticker.py 冒頭）
+- ~/.config/tmux/local.conf はリンクにせず機械ごとに置く
+  - .tmux.conf の最後に source-file するので、status-format などを上書きできる。無ければ読まない
 - ln -s $DOTFILES_ROOT_PWD/byobu/.tmux.conf ~/.config/byobu/
   - byobu は ~/.tmux.conf を読まないので、これで source させている
 - $DOTFILES_ROOT_PWD/agent/claude/build-settings.sh --write
