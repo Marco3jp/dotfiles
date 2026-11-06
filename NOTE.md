@@ -22,6 +22,7 @@
   - byobu は ~/.tmux.conf を読まないので、これで source させている
 - $DOTFILES_ROOT_PWD/agent/claude/build-settings.sh --write
   - agent/claude/settings.json に ~/.claude/settings.*.json（その機械だけの設定）を重ねて ~/.claude/settings.json を書き出す。リンクにしないのは、autoMode がユーザー設定からしか読まれず、機械ごとの値を足す場所が要るため
+  - 重ねるとき、オブジェクトは中身ごとにまとめ、配列（hooks の各イベント・permissions.deny など）は後ろに足す
   - /config などで変えた値は次の書き出しで消えるので、残したい値は agent/claude/settings.json か settings.*.json に書く。--dry-run で差分を見てから --write する
   - hooks で claude-state.sh を呼び、tmux のタブに作業中/入力待ちの色を付けている
 - ln -s $DOTFILES_ROOT_PWD/agent/claude/themes/darcula.json ~/.claude/themes/

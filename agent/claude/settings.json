@@ -220,5 +220,10 @@
   "switchModelsOnFlag": false,
   "remoteControlAtStartup": false,
   "inputNeededNotifEnabled": true,
-  "theme": "custom:darcula"
+  "theme": "custom:darcula",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  }
 }
