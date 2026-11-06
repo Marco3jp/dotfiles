@@ -36,13 +36,18 @@ jq -s '
 ' "$@" > "$tmp"
 
 echo "重ねたファイル: $*" >&2
-if [ -f "$out" ] && diff -u "$out" "$tmp"; then
+if [ -L "$out" ]; then
+  diff -u "$out" "$tmp" || true
+  echo "$out はリンクになっている。--write でリンクを外してファイルに置き換える" >&2
+elif [ -f "$out" ] && diff -u "$out" "$tmp"; then
   echo "差分なし" >&2
   exit 0
 fi
 
 if [ "$mode" = --write ]; then
   [ -f "$out" ] && cp "$out" "$out.prev"
+  # 前は $out を agent/claude/settings.json へのリンクにしていた。リンクのまま cp すると重ねた結果でリポジトリのファイルを書き換えてしまう
+  [ -L "$out" ] && rm "$out"
   cp "$tmp" "$out"
   echo "書き出し: $out" >&2
 fi
