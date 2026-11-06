@@ -23,9 +23,17 @@ for f in "$HOME"/.claude/settings.*.json; do
   [ -f "$f" ] && set -- "$@" "$f"
 done
 
-tmp="$(mktemp)"
+tmp="$(mktemp "${TMPDIR:-/tmp}/claude-settings.XXXXXX")"
 trap 'rm -f "$tmp"' EXIT
-jq -s 'reduce .[] as $x ({}; . * $x)' "$@" > "$tmp"
+# 配列は置き換えずに後ろへ足す。その機械だけの hooks や deny を共通の分に追加できるようにするため
+jq -s '
+  def merge($a; $b):
+    if ($a | type) == "object" and ($b | type) == "object" then
+      reduce ($b | keys_unsorted[]) as $k ($a; .[$k] = (if has($k) then merge(.[$k]; $b[$k]) else $b[$k] end))
+    elif ($a | type) == "array" and ($b | type) == "array" then $a + $b
+    else $b end;
+  reduce .[] as $x ({}; merge(.; $x))
+' "$@" > "$tmp"
 
 echo "重ねたファイル: $*" >&2
 if [ -f "$out" ] && diff -u "$out" "$tmp"; then
