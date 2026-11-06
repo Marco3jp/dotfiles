@@ -58,6 +58,7 @@ $DOTFILES/agent/claude/build-settings.sh --write
   - 重ねるとき、オブジェクトは中身ごとにまとめ、配列（hooks の各イベント・permissions.deny など）は後ろに足す
   - /config などで変えた値は次の書き出しで消える。残したい値は agent/claude/settings.json か settings.*.json に書く
   - agent/claude/settings.json が変わったら（git pull の後など）--dry-run で差分を見てから --write し直す
+  - 前に ~/.claude/settings.json をリンクで置いていた機械では、--write がリンクを外してファイルに置き換える
 - 日本語の書き方 hook に、あるプロジェクトだけで足したい語は、そのプロジェクトの .claude/ja-style-words.json に書く
 
 ### Linux で使っているもの（fish・xfce4・fcitx5）
