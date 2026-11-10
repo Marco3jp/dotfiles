@@ -5,8 +5,12 @@
   Stop        : 直前の assistant 返答をチェック
   PreToolUse  : Bash(gh pr/issue の本文), Write/Edit/NotebookEdit の書き込み内容をチェック
 
-exit 2 + stderr で差し戻す。
-HARD は常に差し戻し。SOFT は同じ内容で再実行されたら通す(誤検出の逃げ道)。
+差し戻すもの: 返答、gh pr/issue の本文、git commit、MCP での書き込み。
+  exit 2 + stderr で差し戻す。
+  HARD は常に差し戻し。SOFT は同じ内容で再実行されたら通す(誤検出の逃げ道)。
+通して知らせるもの: Write/Edit/NotebookEdit と、それ以外の Bash での書き込み。
+  ファイルは後から Edit で直せるので、大きな HTML などを丸ごと再生成させないために
+  書き込みは通し、additionalContext で該当語を伝える。
 
 プロジェクトだけで足したい語は .claude/ja-style-words.json に書く。
   {"hard": {"語": "言い換え"}, "soft": {...}, "exceptions": ["複合語", ...]}
@@ -249,8 +253,8 @@ def attempts(payload):
     return n
 
 
-def judge(text, where, kana_only=False, allow=()):
-    """差し戻すべきなら差し戻す。通してよければ何もせず返る。"""
+def judge(text, where, kana_only=False, allow=(), block=True):
+    """block なら差し戻す。そうでなければ通したうえで該当語を知らせる。"""
     if any(w.upper() in ("ALL", "*") for w in allow):
         return
     hard, soft = lint(text, kana_only)
@@ -258,6 +262,8 @@ def judge(text, where, kana_only=False, allow=()):
     soft = [(w, t) for w, t in soft if w not in allow]
     if not (hard or soft):
         return
+    if not block:
+        warn(hard, soft, where)
     n = attempts(text)
     if hard and n < 2:
         fail(hard, soft, where)
@@ -265,16 +271,35 @@ def judge(text, where, kana_only=False, allow=()):
         fail([], soft, where)
 
 
-def report(hard, soft, where):
-    out = ["「日本語の書き方」のルールに反する語が%sに残っています。" % where, ""]
+def word_list(hard, soft, soft_note):
+    out = []
     if hard:
         out.append("■ 必ず書き換える")
         for w, s in hard:
             out.append("  「%s」 → %s" % (w, s))
     if soft:
-        out.append("■ 文脈しだい（正しい使い方ならそのまま同じ内容で再実行してよい）")
+        out.append("■ 文脈しだい（%s）" % soft_note)
         for w, s in soft:
             out.append("  「%s」 → %s" % (w, s))
+    return out
+
+
+def warn(hard, soft, where):
+    out = ["「日本語の書き方」のルールに反する語が%sに残っています。" % where,
+           "書き込みはそのまま通しました。", ""]
+    out += word_list(hard, soft, "正しい使い方なら直さなくてよい")
+    out.append("")
+    out.append("書き込みをやり直さず、該当箇所だけを Edit で直してください。")
+    print(json.dumps({"hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "additionalContext": "\n".join(out),
+    }}, ensure_ascii=False))
+    sys.exit(0)
+
+
+def report(hard, soft, where):
+    out = ["「日本語の書き方」のルールに反する語が%sに残っています。" % where, ""]
+    out += word_list(hard, soft, "正しい使い方ならそのまま同じ内容で再実行してよい")
     out.append("")
     out.append("該当箇所を書き直してからやり直してください。")
     out.append("どうしても必要な語なら、同じ内容のまま再実行すれば通ります"
@@ -342,6 +367,7 @@ def last_assistant_text(path, tries=10, wait=0.15):
 
 
 GH_WRITE = re.compile(r"\bgh\s+(pr|issue)\s+(create|edit|comment|review)\b")
+GIT_COMMIT = re.compile(r"\bgit\s+commit\b")
 
 # 書き込む側の MCP ツール。idea の apply_patch/create_new_file、
 # Confluence のページ作成、Slack の送信などがここに入る。検索や読み取りは外す。
@@ -417,12 +443,14 @@ def main():
                 pass
         kana_only = False
         where = "PR / Issue の本文" if GH_WRITE.search(cmd) else "コマンドで書き込む内容"
+        block = bool(GH_WRITE.search(cmd) or GIT_COMMIT.search(cmd))
     elif tool.startswith("mcp__") and MCP_WRITE.search(tool):
         body = "\n".join(_strings(ti))
         if not JP.search(body):
             return
         kana_only = False
         where = tool
+        block = True
     elif tool in ("Write", "Edit", "NotebookEdit"):
         path = ti.get("file_path") or ti.get("notebook_path") or ""
         if exempt(path):
@@ -433,10 +461,11 @@ def main():
         ext = os.path.splitext(path)[1].lower()
         kana_only = ext not in TEXT_EXT
         where = os.path.basename(path) or "書き込み内容"
+        block = False
     else:
         return
 
-    judge(body, where, kana_only, allow)
+    judge(body, where, kana_only, allow, block)
 
 
 if __name__ == "__main__":
