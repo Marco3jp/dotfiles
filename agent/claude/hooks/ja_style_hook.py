@@ -8,6 +8,8 @@
 差し戻すもの: 返答、gh pr/issue の本文、git commit、MCP での書き込み。
   exit 2 + stderr で差し戻す。
   HARD は常に差し戻し。SOFT は同じ内容で再実行されたら通す(誤検出の逃げ道)。
+  返答は、差し戻されて書き直したものも1回までチェックする。2回目の書き直しは
+  チェックせずに通す(差し戻しが続いて返答が終わらなくなるのを防ぐ)。
 通して知らせるもの: Write/Edit/NotebookEdit と、それ以外の Bash での書き込み。
   ファイルは後から Edit で直せるので、大きな HTML などを丸ごと再生成させないために
   書き込みは通し、additionalContext で該当語を伝える。
@@ -28,6 +30,8 @@ ALLOW_DIR = os.path.join(".claude", "ja-style-allow")
 ALLOW_TTL = 15 * 60
 WORDS_FILE = os.path.join(".claude", "ja-style-words.json")
 LOG = os.path.join(HOME, ".claude", ".ja-style-log")
+STOP_STATE = os.path.join(HOME, ".claude", ".ja-style-stop.json")
+STOP_RECHECKS = 1
 
 # 誤検出しにくい語。常に差し戻す。
 HARD = {
@@ -253,6 +257,30 @@ def attempts(payload):
     return n
 
 
+def rewrites(session, rewritten):
+    """この返答が差し戻されてから何回書き直されたかを返す。
+
+    stop_hook_active が立っているのは、Stop hook に差し戻されて書き直した返答。
+    立っていなければ新しい返答なので数え直す。
+    """
+    try:
+        state = json.load(open(STOP_STATE, encoding="utf-8"))
+        if not isinstance(state, dict):
+            state = {}
+    except Exception:
+        state = {}
+    n = int(state.pop(session, 0)) + 1 if rewritten else 0
+    state[session] = n
+    if len(state) > 50:
+        state = dict(list(state.items())[-50:])
+    try:
+        with open(STOP_STATE, "w", encoding="utf-8") as f:
+            json.dump(state, f)
+    except OSError:
+        pass
+    return n
+
+
 def judge(text, where, kana_only=False, allow=(), block=True):
     """block なら差し戻す。そうでなければ通したうえで該当語を知らせる。"""
     if any(w.upper() in ("ALL", "*") for w in allow):
@@ -413,9 +441,13 @@ def main():
     allow = allowed_words(data.get("cwd", ""))
 
     if event == "Stop":
-        if data.get("stop_hook_active"):
+        n = rewrites(data.get("session_id", ""), bool(data.get("stop_hook_active")))
+        if n > STOP_RECHECKS:
+            note("Stop: 書き直し%d回目なのでチェックせずに通す" % n)
             return
-        text = last_assistant_text(data.get("transcript_path", ""))
+        # last_assistant_message が無い古い Claude Code ではトランスクリプトから読む。
+        text = data.get("last_assistant_message") or \
+            last_assistant_text(data.get("transcript_path", ""))
         if not text:
             return
         judge(text, "返答", False, allow)
